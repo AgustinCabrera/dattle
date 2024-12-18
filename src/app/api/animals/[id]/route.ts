@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient({});
 
-export async function GET(request: Request, { params }: { params: { id: number } }) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const animal = await prisma.animal.findUnique({
       where: { id: params.id },
@@ -18,16 +18,15 @@ export async function GET(request: Request, { params }: { params: { id: number }
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: number } }) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const animal = await prisma.animal.update({
       where: { id: params.id },
       data: {
-        identification: body.identification,
+        tag: body.tag,
         breed: body.breed,
         birthDate: new Date(body.birthDate),
-        gender: body.gender,
       },
     })
     if (!animal) {
@@ -40,7 +39,7 @@ export async function PUT(request: Request, { params }: { params: { id: number }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: number } }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
     const animal = await prisma.animal.delete({
       where: { id: params.id },

@@ -1,6 +1,6 @@
 "use client"
 
-import { MilkIcon as Cow,Milk,Cross, CalendarHeart} from 'lucide-react'
+import {Milk,Cross, CalendarHeart} from 'lucide-react'
 import { Button } from './ui/button'
 
 export function MainNav() {

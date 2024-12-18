@@ -1,5 +1,5 @@
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
+import { Card, CardContent, CardFooter } from "../ui/card"
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 
 const testimonials = [
   {

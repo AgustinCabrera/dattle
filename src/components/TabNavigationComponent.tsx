@@ -7,7 +7,7 @@ import {
   RiHome2Line,
 } from "@remixicon/react"
 
-import { TabNavigation, TabNavigationLink } from "@/components/TabNavigation"
+import { TabNavigation, TabNavigationLink } from "./TabNavigation"
 
 export const TabNavigationComponent = () => (
   <TabNavigation>

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import SignInForm from "../../../components/auth/SignInForm";
+import LoginForm from "../../../components/auth/loginForm";
 import Link from "next/link";
 
 export default function LoginPage() {
@@ -38,7 +38,7 @@ export default function LoginPage() {
             </div>
 
             {/* Login Form */}
-            <SignInForm />
+            <LoginForm />
 
             {/* Footer Links */}
             <div className="mt-4 text-xs text-gray-500">
