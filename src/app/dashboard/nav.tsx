@@ -15,22 +15,22 @@ export function DashboardNav() {
       title: "Dashboard",
     },
     {
-      href: "/dashboard/animals",
+      href: "/pages/animals",
       icon: Cow,
       title: "Animales",
     },
     {
-      href: "/dashboard/events/1",
+      href: "/pages/heat",
       icon: Heart,
       title: "Celo/Servicio",
     },
     {
-      href: "/dashboard/events/2",
+      href: "/pages/birth",
       icon: Baby,
       title: "Partos",
     },
     {
-      href: "/dashboard/events/3",
+      href: "/pages/diseases",
       icon: Stethoscope,
       title: "Enfermedades",
     },
