@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 
 const RegisterDiseaseComponent = () => {
   const [formData, setFormData] = useState({
-    animalId: "",
+    animalTag: "",
     name: "",
     observation: "",
   });
@@ -46,7 +46,7 @@ const RegisterDiseaseComponent = () => {
         },
         body: JSON.stringify({
           type: "DISEASE",
-          animalId: formData.animalId,
+          animalTag: formData.animalTag,
           description: formData.observation,
           date: new Date().toISOString().slice(0, 10),
         }),
@@ -54,7 +54,7 @@ const RegisterDiseaseComponent = () => {
 
       if (!eventResponse.ok) {
         const errorData = await eventResponse.json();
-        throw new Error("Failed to create event");
+        throw new Error(`Failed to create event: ${errorData.error} `);
       }
 
       const eventData = await eventResponse.json();
@@ -80,7 +80,7 @@ const RegisterDiseaseComponent = () => {
       }
 
       setFormData({
-        animalId: "",
+        animalTag: "",
         name: "",
         observation: "",
       });
@@ -98,14 +98,14 @@ const RegisterDiseaseComponent = () => {
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="animalId" className="block mb-1">
-            Animal ID:
+            Animal Tag:
           </label>
           <input
             type="text"
             id="animalId"
-            value={formData.animalId}
+            value={formData.animalTag}
             onChange={(e) =>
-              setFormData({ ...formData, animalId: e.target.value })
+              setFormData({ ...formData, animalTag: e.target.value })
             }
             className="w-full border border-gray-300 px-3 py-2"
             required

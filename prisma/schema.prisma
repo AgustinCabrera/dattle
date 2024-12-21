@@ -45,8 +45,8 @@ model Event {
   type         String        // Type of the event: Heat, Birth, Disease
   date         DateTime      // Date of the event
   description  String?       // Description for the event
-  animalId     String        // Foreign Key for Animal
-  animal       Animal        @relation(fields: [animalId], references: [id], onDelete: Cascade) // One-to-one
+  animalTag    String        // Foreign Key for Animal 
+  animal       Animal?        @relation(fields: [animalTag], references: [tag], onDelete: Cascade) // One-to-one
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   
