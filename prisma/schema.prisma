@@ -33,25 +33,26 @@ model Animal {
   tag       String   @unique // Unique identifier for the animal
   breed     String?   // Breed of the animal
   birthDate DateTime? // Date of birth
-  ownerId   String   // Foreign Key for User
-  owner     User     @relation(fields: [ownerId], references: [id], onDelete: Cascade) // One-to-one relationship with user
+  ownerId   String?   // Foreign Key for User
+  owner     User?     @relation(fields: [ownerId], references: [id], onDelete: Cascade) // One-to-one relationship with user
   events    Event[]  // One-to-many relationship with events
   createdAt DateTime @default(now()) // date of creation
   updatedAt DateTime @updatedAt // date of update
 }
 
 model Event {
-  id        String   @id @default(uuid()) // Primary Key
-  type      String    // Type of the event: Heat, Birth, Disease
-  date      DateTime // Date of the event
-  description String? // Description for the event
-  animalId  String   // Foreign Key for Animal
-  animal    Animal   @relation(fields: [animalId], references: [id], onDelete: Cascade) // One-to-one
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String        @id @default(uuid()) // Primary Key for Event
+  type         String        // Type of the event: Heat, Birth, Disease
+  date         DateTime      // Date of the event
+  description  String?       // Description for the event
+  animalId     String        // Foreign Key for Animal
+  animal       Animal        @relation(fields: [animalId], references: [id], onDelete: Cascade) // One-to-one
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  
   heatServices HeatService[] // One-to-many relationship with heat services
-  diseases Diseases[] // One-to-many relationship with diseases
-  births Births[] // One-to-many relationship with births
+  diseases     Disease[]     // One-to-many relationship with diseases
+  births       Births[]       // One-to-many relationship with births
 }
 
 enum EventType{
@@ -62,37 +63,38 @@ enum EventType{
 
 model HeatService {
   id              String   @id @default(uuid()) // Unique identifier for the record
-  eventId         String   // Reference to the associated event
+  eventId         String?   // Reference to the associated event
   type            String   // Type: Heat, Service, or Ultrasound
   detectionDate   DateTime // Date when heat was detected
   serviceDate     DateTime // Date of the service (insemination or mating)
   observation     String   // Result: Pending, Pregnant, Failed
-
-  event           Event    @relation(fields: [eventId], references: [id])
+  event           Event?    @relation(fields: [eventId], references: [id])
 }
 
-model Diseases {
-  id                  String   @id @default(uuid()) // Unique identifier for the record
-  eventId             String   // Reference to the associated event
-  diagnosis           String   // Disease diagnosis
-  diagnosisDate       DateTime // Date when the disease was diagnosed
-  treatmentDetails    String   // Details of the treatment
-  treatmentStartDate  DateTime // Start date of the treatment
-  treatmentEndDate    DateTime // End date of the treatment
-  veterinarianId      String?  // Reference to the veterinarian (optional)
-
-  event               Event    @relation(fields: [eventId], references: [id])
+model Disease {
+  id           String   @id @default(uuid()) // Primary Key
+  name         String
+  observation  String?
+  eventId      String   // Foreign Key for Event
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+}
+model CommonDisease {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Births {
   id               String   @id @default(uuid()) // Unique identifier for the record
-  eventId          String   // Reference to the associated event
+  eventId          String?   // Reference to the associated event
   birthDate        DateTime // Date of birth
   numberOfOffspring Int     // Number of offspring born
   offspringSex     Json     // Details about the sex of the offspring
   offspringState   String   // State: Alive, Dead, Mixed
   notes            String   // Additional notes about the birth
-
-  event            Event    @relation(fields: [eventId], references: [id])
+  event            Event?    @relation(fields: [eventId], references: [id])
 }
 

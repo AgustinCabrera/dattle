@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET(request: Request) {
+export async function GET(req: Request) {
   try {
     const events = await prisma.event.findMany({
       include: { animal: true },
@@ -14,21 +14,39 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await request.json()
-    const event = await prisma.event.create({
+    const body = await req.json();
+    console.log("Request body:", body);
+
+    const requiredFields = ['type', 'animalId', 'description', 'date'];
+    for (const field of requiredFields) {
+      if (!body[field]) {
+        return NextResponse.json(
+          { error: `Missing required field: ${field}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    const newEvent = await prisma.event.create({
       data: {
-        name: body.name,
-        date: new Date(body.date),
-        animalId: body.animalId,
         type: body.type,
+        animalId: body.animalId,
+        description: body.description,
+        date: new Date(body.date),
       },
-    })
-    return NextResponse.json(event, { status: 201 })
+    });
+
+    console.log("New Event Created:", newEvent);
+
+    return NextResponse.json(newEvent, { status: 201 });
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create event' }, { status: 500 })
+    console.error("Error creating event:", error);
+    return NextResponse.json(
+      { error: "Failed to create event", details: error.message },
+      { status: 500 }
+    );
   }
 }
-
 

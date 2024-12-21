@@ -5,37 +5,45 @@ const prisma = new PrismaClient({});
 
 export async function GET(req: NextRequest) {
   try {
-    const diseases = await prisma.diseases.findMany({ include: { event: true } });
+    const diseases = await prisma.disease.findMany({ include: { event: true } });
     if (!diseases) {
-      return new NextResponse(JSON.stringify({ error: 'Animals not found' }), { status: 404 });
+      return new NextResponse(JSON.stringify({ error: "Diseases not found" }), { status: 404 });
     }
     return new NextResponse(JSON.stringify(diseases), { status: 200 });
   } catch (error) {
-    return new NextResponse(JSON.stringify({ error: 'Failed to fetch animals' }), { status: 500 });
+    return new NextResponse(JSON.stringify({ error: "Failed to fetch diseases" }), { status: 500 });
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    if (!body) {
-      return new NextResponse(JSON.stringify({ error: 'Fields not filled succesfully' }), { status: 400 });
+
+    // Validate the incoming request body
+    if (!body.eventId || !body.observation) {
+      return new NextResponse(
+        JSON.stringify({ error: "Fields not filled successfully" }),
+        { status: 400 }
+      );
     }
-    const diseases = await prisma.diseases.create({
-      data:
-        {
-          event: body.event,
-          diagnosis: body.diagnosis,
-          diagnosisDate: new Date(body.diagnosisDate),
-          treatmentDetails: body.treatmentDetails,
-          treatmentEndDate: body.treatmentEndDate,
-          treatmentStartDate: body.treatmentStartDate,
-          veterinarianId: body.veterinarianId,
+
+    // Create a new disease associated with an event
+    const disease = await prisma.disease.create({
+      data: {
+        name: body.name,
+        observation: body.observation,
+        event: {
+          connect: { id: body.eventId }, // Link the disease to an existing event
         },
-      });
-      return new NextResponse(JSON.stringify(diseases), { status: 201 });
-    }
-    catch (error) {
-      return new NextResponse(JSON.stringify({ error: 'Failed to create disease' }), { status: 500 });
-    }
+      },
+    });
+
+    return new NextResponse(JSON.stringify(disease), { status: 201 });
+  } catch (error) {
+    console.error("Error creating disease:", error);
+    return new NextResponse(
+      JSON.stringify({ error: "Failed to create disease" }),
+      { status: 500 }
+    );
   }
+}

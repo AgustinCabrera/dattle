@@ -6,10 +6,7 @@ import ContextProvider from "../context/GlobalContext"
 export const metadata: Metadata = {
   title: "Dattle",
   description: "a software company",
-  icons: {
-    icon: "/favicon.ico", // Path to your favicon
-  },
-};
+}
 
 export default function RootLayout({
   children,

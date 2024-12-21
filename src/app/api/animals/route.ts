@@ -28,10 +28,10 @@ export async function POST(request: Request) {
     }
     const animal = await prisma.animal.create({
       data: {
-        identification: body.identification,
+        tag: body.tag,
         breed: body.breed,
         birthDate: new Date(body.birthDate),
-        gender: body.gender,
+        ownerId: body.ownerId,
       },
     })
     return new NextResponse(JSON.stringify(animal), { status: 201 })
