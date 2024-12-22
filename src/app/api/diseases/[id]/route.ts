@@ -5,7 +5,7 @@ const prisma = new PrismaClient({});
 
 export async function GET(req: NextRequest , {params}: {params : {id: string}}){
   try {
-    const disease = await prisma.diseases.findUnique({
+    const disease = await prisma.disease.findUnique({
       where: {id: (params.id)},
       include: {event: true},
     })
@@ -21,15 +21,12 @@ export async function GET(req: NextRequest , {params}: {params : {id: string}}){
 export async function PUT(req: NextRequest , {params}: {params : {id: string}}){
   try {
     const body = await req.json();
-    const disease = await prisma.diseases.update({
+    const disease = await prisma.disease.update({
       where: {id: (params.id)},
       data: {
-        diagnosis: body.diagnosis,
-        diagnosisDate: new Date(body.diagnosisDate),
-        treatmentDetails: body.treatmentDetails,
-        treatmentEndDate: body.treatmentEndDate,
-        treatmentStartDate: body.treatmentStartDate,
-        veterinarianId: body.veterinarianId,
+        name: body.name,
+        observation: body.observation,
+        eventId: body.eventId,
       },
     })
     if (!disease) {
@@ -42,7 +39,7 @@ export async function PUT(req: NextRequest , {params}: {params : {id: string}}){
 }
 export async function DELETE(req: NextRequest , {params}: {params : {id: string}}){
   try {
-    const disease = await prisma.diseases.delete({
+    const disease = await prisma.disease.delete({
       where: {id: (params.id)},
     })
     if (!disease) {
@@ -53,4 +50,3 @@ export async function DELETE(req: NextRequest , {params}: {params : {id: string}
     return new NextResponse(JSON.stringify({error: 'Failed to delete disease'}), {status: 500});
   }
 }
-

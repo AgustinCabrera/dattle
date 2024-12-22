@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client'
 
 const prisma = new PrismaClient()
 
-export async function GET(request: Request, { params }: { params: { id: number } }) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const event = await prisma.event.findUnique({
       where: { id: params.id },
@@ -18,16 +18,16 @@ export async function GET(request: Request, { params }: { params: { id: number }
   }
 }
 
-export async function PUT(request: Request, { params }: { params: { id: number } }) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   try {
     const body = await request.json()
     const event = await prisma.event.update({
       where: { id: params.id },
       data: {
-        name: body.name,
-        date: new Date(body.date),
-        animalId: body.animalId,
+        animalTag: body.animalTag,
         type: body.type,
+        description: body.description,
+        date: new Date(body.date),
       },
     })
     return NextResponse.json(event)
@@ -36,7 +36,7 @@ export async function PUT(request: Request, { params }: { params: { id: number }
   }
 }
 
-export async function DELETE(request: Request, { params }: { params: { id: number } }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   try {
     await prisma.event.delete({
       where: { id: params.id },

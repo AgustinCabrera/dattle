@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     console.log("Request body:", body);
 
-    const requiredFields = ['type', 'animalId', 'description', 'date'];
+    const requiredFields = ['type', 'animalTag', 'description', 'date'];
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json(
@@ -29,10 +29,22 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Check if the animal exists
+    const animal = await prisma.animal.findUnique({
+      where: { tag: body.animalTag },
+    });
+
+    if (!animal) {
+      return NextResponse.json(
+        { error: `Animal with tag ${body.animalTag} not found` },
+        { status: 404 }
+      );
+    }
+
     const newEvent = await prisma.event.create({
       data: {
         type: body.type,
-        animalId: body.animalId,
+        animalTag: body.animalTag,
         description: body.description,
         date: new Date(body.date),
       },

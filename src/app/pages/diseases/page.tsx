@@ -14,7 +14,7 @@ const DiseaseComponent = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
+    <div className="flex justify-center items-center min-h-screen ">
       <div className="p-6 bg-white shadow-md rounded-lg max-w-sm w-full">
         <h2 className="text-xl font-bold text-center mb-4">Disease Management</h2>
         <div className="flex flex-col gap-4">
