@@ -20,7 +20,7 @@ export function DashboardNav() {
       title: "Animales",
     },
     {
-      href: "/heat",
+      href: "/heat-service",
       icon: Heart,
       title: "Celo/Servicio",
     },
