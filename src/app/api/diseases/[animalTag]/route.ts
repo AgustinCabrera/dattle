@@ -3,16 +3,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient({});
 
-export async function GET(req: NextRequest , {params}: {params : {id: string}}){
+export async function GET(req: NextRequest , {params}: {params : {animalTag: string}}){
   try {
-    const disease = await prisma.disease.findUnique({
-      where: {id: (params.id)},
-      include: {event: true},
+    const animalSick = await prisma.animal.findMany({
+      where: {tag: (params.animalTag)},
+      include: {events: true},
     })
-    if (!disease) {
-      return new NextResponse(JSON.stringify({error: 'Disease not found'}), {status: 404});
+    if (!animalSick) {
+      return new NextResponse(JSON.stringify({error: 'Animal with a disease not found'}), {status: 404});
     }
-    return new NextResponse(JSON.stringify(disease), {status: 200});
+    return new NextResponse(JSON.stringify(animalSick), {status: 200});
   } catch (error) {
     return new NextResponse(JSON.stringify({error: 'Failed to fetch disease'}), {status: 500});
   }

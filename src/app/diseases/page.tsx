@@ -6,11 +6,11 @@ const DiseaseComponent = () => {
   const router = useRouter();
 
   const handleRegister = () => {
-    router.push("/pages/diseases/registerDisease");
+    router.push("/diseases/register-diseases");
   };
 
   const handleSearch = () => {
-    router.push("/pages/diseases/searchDisease");
+    router.push("/diseases/search-diseases");
   };
 
   return (
@@ -20,16 +20,20 @@ const DiseaseComponent = () => {
         <div className="flex flex-col gap-4">
           <button
             onClick={handleRegister}
-            className="px-4 py-2 bg-blue-500 text-white font-medium rounded-lg hover:bg-blue-600 transition"
+            className="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-500 transition"
           >
             Register Disease
           </button>
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-green-500 text-white font-medium rounded-lg hover:bg-green-600 transition"
+            className="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-500 transition"
           >
             Search Disease
           </button>
+          <button
+            onClick={() => router.push("/dashboard")}
+            className="px-4 py-2 bg-gray-950 text-white font-medium rounded-lg hover:bg-gray-800 transition"
+          >Back</button>
         </div>
       </div>
     </div>
