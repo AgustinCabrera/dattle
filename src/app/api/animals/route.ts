@@ -30,12 +30,12 @@ export async function POST(request: Request) {
       data: {
         tag: body.tag,
         breed: body.breed,
-        birthDate: new Date(body.birthDate),
-        ownerId: body.ownerId,
+        birthDate: new Date(body.birthDate)
       },
     })
     return new NextResponse(JSON.stringify(animal), { status: 201 })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to create animal' }, { status: 500 })
+    console.error(error);
+    return NextResponse.json({ error: 'Failed to create animal', details: error.message }, { status: 500 });
   }
 }
