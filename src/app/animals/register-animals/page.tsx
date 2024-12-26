@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -95,7 +95,7 @@ const RegisterAnimalComponents = () => {
             </div>
             <Button type="submit">Register Animal</Button>
           </form>
-          <Button onClick={() => router.push('/diseases')}>Back</Button>
+          <Button onClick={() => router.push('/animals')}>Back</Button>
         </CardContent>
       </Card>
       
