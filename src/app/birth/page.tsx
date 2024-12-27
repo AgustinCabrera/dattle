@@ -6,7 +6,7 @@ const BirthComponent = () => {
   const router = useRouter();
 
   const handleRegister = () => {
-    router.push("/birth/register-briths");
+    router.push("/birth/register-births");
   };
 
   const handleSearch = () => {

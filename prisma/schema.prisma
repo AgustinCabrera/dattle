@@ -36,6 +36,7 @@ model Animal {
   ownerId   String?   // Foreign Key for User
   owner     User?     @relation(fields: [ownerId], references: [id], onDelete: Cascade) // One-to-one relationship with user
   events    Event[]  // One-to-many relationship with events
+  births    Births[] // One-to-many relationship with births
   createdAt DateTime @default(now()) // date of creation
   updatedAt DateTime @updatedAt // date of update
 }
@@ -90,11 +91,13 @@ model CommonDisease {
 model Births {
   id               String   @id @default(uuid()) // Unique identifier for the record
   eventId          String?   // Reference to the associated event
+  animalTag        String // Foreign Key for Animal
   birthDate        DateTime // Date of birth
-  numberOfOffspring Int     // Number of offspring born
-  offspringSex     Json     // Details about the sex of the offspring
-  offspringState   String   // State: Alive, Dead, Mixed
-  notes            String   // Additional notes about the birth
+  pups             Int     // Number of offspring born
+  observation      String   // Additional notes about the birth
   event            Event?    @relation(fields: [eventId], references: [id])
+  animal           Animal    @relation(fields: [animalTag], references: [tag])
+  
+  
 }
 
