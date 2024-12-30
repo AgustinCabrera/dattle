@@ -3,21 +3,11 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 const HeatServiceComponent = () => {
-
-
   const router = useRouter();
-  
-
-  
-  const handleRegister = () => {
-    router.push("/heat-service/register-heat");
-  };
-
-  const handleSearch = () => {
-    router.push("/heat-service/search-heat-service");
-  };
-
-  
+  const handleRegisterHeat = () => { router.push("/heat-service/register-heat");};
+  const handleRegisterService = () => {router.push("/heat-service/register-service");}
+  const handleRegisterTouch = () => {router.push("/heat-service/register-touch");};
+  const handleSearch = () => {router.push("/heat-service/search-heat-service");};
 
   return (
     <div className="flex justify-center items-center min-h-screen ">
@@ -25,22 +15,22 @@ const HeatServiceComponent = () => {
         <h2 className="text-xl font-bold text-center mb-4">Heat & Service Management</h2>
         <div className="flex flex-col gap-4">
           <button
-            onClick={handleRegister}
+            onClick={handleRegisterHeat}
             className="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-500 transition"
           >
             Register Heat
           </button>
           <button
-            onClick={handleRegister}
+            onClick={handleRegisterService}
             className="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-500 transition"
           >
             Register Service
           </button>
           <button
-            onClick={handleRegister}
+            onClick={handleRegisterTouch}
             className="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-500 transition"
           >
-            Register Rectal Palpation
+            Register Touch
           </button>
           <button
             onClick={handleSearch}
