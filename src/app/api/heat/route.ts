@@ -1,32 +1,76 @@
-import { PrismaClient } from "@prisma/client";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import prisma from '../../lib/prisma';
 
-const primsa = new PrismaClient({});
-export async function POST(req: NextRequest,){
+export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const heat = await primsa.heatService.create({
+    const { animalTag, detectionDate, observation, type } = body;
+
+    if (!animalTag || !detectionDate) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    const animal = await prisma.animal.findUnique({
+      where: { tag: animalTag },
+    });
+
+    if (!animal) {
+      return NextResponse.json(
+        { error: `Animal with tag ${animalTag} does not exist` },
+        { status: 404 }
+      );
+    }
+
+    const heat = await prisma.heatService.create({
       data: {
-      detectionDate: body.detectionDate,
-      serviceDate: body.serviceDate,
-      observation: body.observation,
-      event: body.event,
-      type: body.type,
+        detectionDate: new Date(detectionDate),
+        observation: observation || "",
+        event: {
+          create: {
+            type: type || "HEAT",
+            date: new Date(detectionDate),
+            description: observation || "",
+            animalTag,
+          },
+        },
+        animal: {
+          connect: { tag: animalTag },
+        },
       },
-    })
-    return new NextResponse(JSON.stringify(heat), {status: 201});
+      include: {
+        event: true,
+        animal: true,
+      },
+    });
+
+    console.log("Heat created successfully:", heat);
+    return NextResponse.json(heat, { status: 201 });
   } catch (error) {
-    return new NextResponse(JSON.stringify({error: 'Failed to create heat'}), {status: 500});
+    console.error("Error in POST /api/heat:", error.message, error.stack);
+    return NextResponse.json(
+      { error: "Failed to create heat" },
+      { status: 500 }
+    );
   }
 }
 
-export async function GET(req: NextRequest){
+export async function GET(req: Request) {
   try {
-    const heats = await primsa.heatService.findMany({
-      include: {event: true},
-    })
-    return new NextResponse(JSON.stringify(heats), {status: 200});
+    const heats = await prisma.heatService.findMany({
+      include: { 
+        event: true,
+        animal: true
+      },
+    });
+    return NextResponse.json(heats);
   } catch (error) {
-    return new NextResponse(JSON.stringify({error: 'Failed to fetch heats'}), {status: 500});
+    console.error("Error in GET /api/heat:", error.message, error.stack);
+    return NextResponse.json(
+      { error: "Failed to fetch heats" },
+      { status: 500 }
+    );
   }
 }

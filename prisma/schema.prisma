@@ -37,6 +37,7 @@ model Animal {
   owner     User?     @relation(fields: [ownerId], references: [id], onDelete: Cascade) // One-to-one relationship with user
   events    Event[]  // One-to-many relationship with events
   births    Births[] // One-to-many relationship with births
+  heat      HeatService[] // One-to-many relationship with heat services
   createdAt DateTime @default(now()) // date of creation
   updatedAt DateTime @updatedAt // date of update
 }
@@ -65,11 +66,12 @@ enum EventType{
 model HeatService {
   id              String   @id @default(uuid()) // Unique identifier for the record
   eventId         String?   // Reference to the associated event
-  type            String   // Type: Heat, Service, or Ultrasound
   detectionDate   DateTime // Date when heat was detected
-  serviceDate     DateTime // Date of the service (insemination or mating)
+  serviceDate     DateTime? // Date of the service (insemination or mating)
   observation     String   // Result: Pending, Pregnant, Failed
   event           Event?    @relation(fields: [eventId], references: [id])
+  animalTag       String
+  animal          Animal    @relation(fields: [animalTag], references: [tag])
 }
 
 model Disease {
@@ -97,7 +99,5 @@ model Births {
   observation      String   // Additional notes about the birth
   event            Event?    @relation(fields: [eventId], references: [id])
   animal           Animal    @relation(fields: [animalTag], references: [tag])
-  
-  
 }
 

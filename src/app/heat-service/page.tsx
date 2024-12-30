@@ -3,15 +3,21 @@ import React from "react";
 import { useRouter } from "next/navigation";
 
 const HeatServiceComponent = () => {
-  const router = useRouter();
 
+
+  const router = useRouter();
+  
+
+  
   const handleRegister = () => {
-    router.push("/heat-service/register-heat-service");
+    router.push("/heat-service/register-heat");
   };
 
   const handleSearch = () => {
     router.push("/heat-service/search-heat-service");
   };
+
+  
 
   return (
     <div className="flex justify-center items-center min-h-screen ">

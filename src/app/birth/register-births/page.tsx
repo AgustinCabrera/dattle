@@ -35,7 +35,8 @@ const RegisterBirthComponent = () => {
           type: "BIRTH",
           animalTag: formData.animalTag.trim(),
           observation: formData.observation.trim(),
-          birthDate: formData.birthDate || new Date().toISOString().slice(0, 10),
+          birthDate:
+            formData.birthDate || new Date().toISOString().slice(0, 10),
           pups: formData.pups,
         }),
       });
@@ -43,10 +44,11 @@ const RegisterBirthComponent = () => {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.indexOf("application/json") !== -1) {
         const data = await response.json();
+
         if (!response.ok) {
           throw new Error(data.error || "Failed to create birth");
         }
-        
+
         setSuccess("Birth registered successfully");
         setFormData({
           animalTag: "",
@@ -54,8 +56,8 @@ const RegisterBirthComponent = () => {
           pups: "",
           observation: "",
         });
-        
-        alert ("Birth registered successfully");
+
+        alert("Birth registered successfully");
       } else {
         const text = await response.text();
         console.error("Non-JSON response:", text);
