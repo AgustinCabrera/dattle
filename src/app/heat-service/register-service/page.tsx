@@ -25,7 +25,7 @@ const RegisterServicePage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          type: "HEAT",
+          type: "SERVICE",
           animalTag: formData.animalTag.trim(),
           observation: formData.observation.trim(),
           detectionDate: formData.detectionDate, 
