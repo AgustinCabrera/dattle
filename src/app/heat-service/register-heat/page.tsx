@@ -50,8 +50,6 @@ const RegisterHeatPage = () => {
         observation: "",
         detectionDate: "",
       });
-
-      router.push("/heat");
     } catch (error) {
       console.error("Error registering heat:", error);
       alert("Failed to register heat");
