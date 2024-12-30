@@ -72,6 +72,7 @@ model HeatService {
   event           Event?    @relation(fields: [eventId], references: [id])
   animalTag       String
   animal          Animal    @relation(fields: [animalTag], references: [tag])
+  animalTouch     String?   // Result of the touch
 }
 
 model Disease {

@@ -4,9 +4,9 @@ import prisma from '../../lib/prisma';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { animalTag, detectionDate, observation, type } = body;
+    const { animalTag, serviceDate, observation, type } = body;
 
-    if (!animalTag || !detectionDate) {
+    if (!animalTag || !serviceDate) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -26,12 +26,12 @@ export async function POST(req: Request) {
 
     const service = await prisma.heatService.create({
       data: {
-        detectionDate: new Date(detectionDate),
+        detectionDate: new Date(serviceDate),
         observation: observation || "",
         event: {
           create: {
             type: type || "SERVICE",
-            date: new Date(detectionDate),
+            date: new Date(serviceDate),
             description: observation || "",
             animalTag,
           },
