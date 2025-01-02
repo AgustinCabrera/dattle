@@ -53,3 +53,19 @@ export async function POST(req: Request) {
     );
   }
 }
+export async function GET(req: Request){
+  try {
+    const touches = await prisma.heatService.findMany({
+      where: { detectionDate: { not: null } },
+      include: { event: true, animal: true }
+    })
+    if(!touches){
+      return NextResponse.json({error: "Animal tag is required"},{status:400})
+    }
+    return new NextResponse(JSON.stringify(touches), { status: 200 })
+  } catch (error) {
+    console.error('Error searching touches', error)
+    return NextResponse.json({error: error.message},{status:500})
+  }
+
+}

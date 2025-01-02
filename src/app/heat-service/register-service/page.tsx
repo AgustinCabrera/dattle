@@ -9,7 +9,8 @@ const RegisterServicePage = () => {
   const [formData, setFormData] = useState({
     animalTag: "",
     observation: "",
-    detectionDate: "", 
+    serviceDate: "", 
+
   });
 
   const router = useRouter();
@@ -26,9 +27,9 @@ const RegisterServicePage = () => {
         },
         body: JSON.stringify({
           type: "SERVICE",
-          animalTag: formData.animalTag.trim(),
-          observation: formData.observation.trim(),
-          detectionDate: formData.detectionDate, 
+          animalTag: formData.animalTag,
+          observation: formData.observation,
+          serviceDate: formData.serviceDate, 
         }),
       });
 
@@ -42,13 +43,13 @@ const RegisterServicePage = () => {
         type: "SERVICE",
         animalTag: formData.animalTag,
         observation: formData.observation,
-        detectionDate: formData.detectionDate,
+        serviceDate: formData.serviceDate,
       })
 
       setFormData({
         animalTag: "",
         observation: "",
-        detectionDate: "",
+        serviceDate: "",
       });
     } catch (error) {
       console.error("Error registering Service:", error);
@@ -80,9 +81,9 @@ const RegisterServicePage = () => {
               </label>
               <Input
                 type="datetime-local"
-                value={formData.detectionDate}
+                value={formData.serviceDate}
                 onChange={(e) =>
-                  setFormData({ ...formData, detectionDate: e.target.value })
+                  setFormData({ ...formData, serviceDate: e.target.value })
                 }
               />
             </div>

@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     }
 
     const animal = await prisma.animal.findUnique({
-      where: { tag: animalTag },
+      where: { tag: String(animalTag) },
     });
 
     if (!animal) {
@@ -24,9 +24,9 @@ export async function POST(req: Request) {
       );
     }
 
-    const service = await prisma.heatService.create({
+    const heatService = await prisma.heatService.create({
       data: {
-        detectionDate: new Date(serviceDate),
+        serviceDate: new Date(serviceDate),
         observation: observation || "",
         event: {
           create: {
@@ -40,14 +40,10 @@ export async function POST(req: Request) {
           connect: { tag: animalTag },
         },
       },
-      include: {
-        event: true,
-        animal: true,
-      },
     });
-
-    console.log("Service created successfully:", service);
-    return NextResponse.json(service, { status: 201 });
+    console.log(heatService)
+    console.log("Service created successfully:", heatService);
+    return NextResponse.json(heatService, { status: 201 });
   } catch (error) {
     console.error("Error in POST /api/service:", error.message, error.stack);
     return NextResponse.json(
