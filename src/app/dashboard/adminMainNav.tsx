@@ -1,45 +1,46 @@
-"use client";
+"use client"
+
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { MilkIcon as Cow, Heart, Baby, Stethoscope, LayoutDashboard } from 'lucide-react'
-import { cn } from "../lib/utils"
-import { Button } from "../../components/ui/button"
+import { Users, FileText, AlertCircle, BarChart2 } from 'lucide-react'
+import { cn } from "../lib/cn"
+import { Button } from "@/components/ui/button"
 
-export function DashboardNav() {
+export function AdminMainNav() {
   const pathname = usePathname()
 
   const routes = [
     {
-      href: "/dashboard",
-      icon: LayoutDashboard,
+      href: "/dashboard/admin",
+      icon: BarChart2,
       title: "Dashboard",
     },
     {
-      href: "/animals",
-      icon: Cow,
-      title: "Animals",
+      href: "/dashboard/admin/users",
+      icon: Users,
+      title: "User Management",
     },
     {
-      href: "/heat-service",
-      icon: Heart,
-      title: "Heat - Service",
+      href: "/dashboard/admin/content",
+      icon: FileText,
+      title: "Content Management",
     },
     {
-      href: "/birth",
-      icon: Baby,
-      title: "Births",
+      href: "/dashboard/admin/logs",
+      icon: AlertCircle,
+      title: "System Logs",
     },
     {
-      href: "/diseases",
-      icon: Stethoscope,
-      title: "Diseases",
+      href: "/dashboard/admin/analytics",
+      icon: BarChart2,
+      title: "Analytics",
     },
   ]
 
   return (
     <nav className="flex flex-col w-64 border-r bg-gray-50/40">
       <div className="p-6">
-        <h1 className="text-xl font-bold">Manage cattle</h1>
+        <h1 className="text-xl font-bold">Admin Panel</h1>
       </div>
       <div className="flex-1 px-4 space-y-2">
         {routes.map((route) => (

@@ -1,14 +1,26 @@
+import { getServerSession } from "next-auth/next"
+import { redirect } from "next/navigation"
+import { authOptions } from "../api/auth/[...nextauth]/route"
+import { AdminMainNav } from "./adminMainNav";
 import { MainNav } from "./main-nav"
-import { DashboardNav } from "./nav"
+import { DashboardNav } from "./nav";
 
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const session = await getServerSession(authOptions)
+
+  if (!session) {
+    redirect("/auth/login")
+  }
+
+  const isAdmin = session.user.role === "admin"
+
   return (
     <div className="flex min-h-screen">
-      <DashboardNav />
+      {isAdmin ? <AdminMainNav /> : <DashboardNav />}
       <div className="flex-1">
         <MainNav />
         <main className="p-8">{children}</main>
@@ -16,4 +28,5 @@ export default function DashboardLayout({
     </div>
   )
 }
+
 

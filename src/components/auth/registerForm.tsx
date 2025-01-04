@@ -4,7 +4,7 @@ import { Flex, TextField, Button, Text } from '@radix-ui/themes'
 import { EnvelopeClosedIcon, LockClosedIcon, PersonIcon } from '@radix-ui/react-icons';
 import { useForm,Controller } from 'react-hook-form';
 import axios from 'axios';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { signIn } from 'next-auth/react';
 
 

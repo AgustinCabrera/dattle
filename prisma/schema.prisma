@@ -25,7 +25,7 @@ model User {
   animals   Animal[] // One-to-many relationship with animals
   createdAt DateTime @default(now()) // date of creation
   updatedAt DateTime @updatedAt // date of update
-  isAdmin  Boolean @default(false) // Admin flag
+  role      String  @default("user")
 }
 
 model Animal {
