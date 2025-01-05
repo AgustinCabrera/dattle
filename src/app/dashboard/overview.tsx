@@ -4,7 +4,7 @@ import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 const data = [
   {
-    name: "Ene",
+    name: "Jan",
     total: 12,
   },
   {
@@ -16,7 +16,7 @@ const data = [
     total: 18,
   },
   {
-    name: "Abr",
+    name: "Apr",
     total: 14,
   },
   {

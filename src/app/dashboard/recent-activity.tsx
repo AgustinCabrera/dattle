@@ -1,22 +1,22 @@
 export function RecentActivity() {
   const activities = [
     {
-      type: "Servicio",
+      type: "Service",
       animalId: "A123",
-      description: "Servicio registrado",
-      date: "Hace 2 horas",
+      description: "Service registered",
+      date: "2 hours ago",
     },
     {
-      type: "Parto",
+      type: "Birth",
       animalId: "A145",
-      description: "Parto exitoso - 2 crías",
-      date: "Hace 5 horas",
+      description: "Succesfully birth - 2 cows",
+      date: "5 hours ago",
     },
     {
-      type: "Enfermedad",
+      type: "Disease",
       animalId: "A167",
-      description: "Inicio de tratamiento",
-      date: "Hace 1 día",
+      description: "Beggining of treatment",
+      date: "1 day ago",
     },
   ]
 

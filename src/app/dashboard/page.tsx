@@ -8,45 +8,45 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Animales</CardTitle>
+            <CardTitle className="text-sm font-medium">Total Animals</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">123</div>
             <p className="text-xs text-muted-foreground">
-              +2 desde el último mes
+              +2 since last month
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Servicios Activos</CardTitle>
+            <CardTitle className="text-sm font-medium">Active Services</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">15</div>
             <p className="text-xs text-muted-foreground">
-              +3 esta semana
+              +3 this week
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Partos Esperados</CardTitle>
+            <CardTitle className="text-sm font-medium">Estimated Births</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">8</div>
             <p className="text-xs text-muted-foreground">
-              Próximos 30 días
+              Next 30 days
             </p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tratamientos Activos</CardTitle>
+            <CardTitle className="text-sm font-medium">Active Treatments</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">4</div>
             <p className="text-xs text-muted-foreground">
-              2 finalizan esta semana
+              2 ends this week
             </p>
           </CardContent>
         </Card>
@@ -54,7 +54,7 @@ export default function DashboardPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
         <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Resumen</CardTitle>
+            <CardTitle>Resume</CardTitle>
           </CardHeader>
           <CardContent>
             <Overview />
@@ -62,7 +62,7 @@ export default function DashboardPage() {
         </Card>
         <Card className="col-span-3">
           <CardHeader>
-            <CardTitle>Actividad Reciente</CardTitle>
+            <CardTitle>Recent Activity</CardTitle>
           </CardHeader>
           <CardContent>
             <RecentActivity />

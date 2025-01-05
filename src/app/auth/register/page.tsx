@@ -1,8 +1,17 @@
+"use client"
 import Image from "next/image";
 import RegisterForm from "../../../components/auth/registerForm";
 import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
+  const handleBackClick = () => {
+        router.push('/');
+    };
   return (
     <div className='flex items-center justify-center h-screen'>
       <div className='w-auto border-gray-800 rounded-3xl flex max-w-[700px] h-[500px] shadow-2xl'>
@@ -38,6 +47,10 @@ export default function RegisterPage() {
                   Sign In here
                 </Link>
               </div>
+              <Button onClick={handleBackClick} className="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-1  px-2 rounded transition-all">
+                <ArrowLeft className="w-5 h-5 mr-3" />
+                Back
+              </Button>
             </div>
           </div>
         </div>

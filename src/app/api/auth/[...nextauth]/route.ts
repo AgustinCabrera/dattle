@@ -57,7 +57,7 @@ export const authOptions: AuthOptions = {
     signIn: "/auth/login",
   },
   callbacks: {
-    async jwt({ token, user }: { token: JWT; user?: User | AdapterUser }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
         token.name = user.name;
@@ -66,23 +66,13 @@ export const authOptions: AuthOptions = {
       }
       return token;
     },
-    async session({
-      session,
-      token,
-    }: {
-      session: NextAuthSession & { user: { id: string; role: string } };
-      token: JWT;
-    }) {
-      if (token) {
-        session.user = {
-          id: token.id,
-          name: token.name,
-          email: token.email,
-          role: token.role,
-        };
+    async session({ session, token }) {
+      if (token && session.user) {
+        session.user.id = token.id as string;
+        session.user.name = token.name as string;
+        session.user.email = token.email as string;
+        session.user.role = token.role as string;
       }
-
-      session.user = token;
       return session;
     },
   },
