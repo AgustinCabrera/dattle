@@ -2,6 +2,7 @@
 import { Bell, Settings } from 'lucide-react'
 import { Button } from "../../components/ui/button"
 import { LogoutButton } from "@/components/logout-button"
+import {useRouter} from 'next/navigation'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,8 +10,12 @@ import {
   DropdownMenuTrigger,
 } from "../../components/ui/dropdown-menu"
 
-
 export function MainNav() {
+  
+const router = useRouter();
+const handleRoute = () =>{
+  router.push('dashboard/settings')
+}
   return (
     <header className="border-b">
       <div className="flex h-16 items-center px-4">
@@ -27,9 +32,9 @@ export function MainNav() {
             <DropdownMenuContent align="end" className='bg-white border border-gray-200 rounded-md shadow-lg'>
               <Button className='text-black'>My Account</Button>
               <DropdownMenuSeparator />
-              <Button className='text-black'>Configuration</Button>
+              <Button onClick={handleRoute} className='text-black'>Settings</Button>
               <DropdownMenuSeparator />
-              <LogoutButton />
+              <LogoutButton  />
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
