@@ -14,7 +14,7 @@ interface Event {
   id: string;
   type: string;
   date: string;
-  disease: Disease | null;
+  diseases: Disease[];
 }
 
 interface Animal {
@@ -30,8 +30,10 @@ interface AnimalsCardProps {
 }
 
 const AnimalsCard = ({ animal }: AnimalsCardProps) => {
-  const [isExpanded, setIsExpanded] = useState(false)
-  const diseaseEvents = animal.events.filter(event => event.disease !== null);
+  const [isExpanded, setIsExpanded] = useState(false);
+  
+  // Flatten all diseases from all events
+  const allDiseases = animal.events.flatMap(event => event.diseases);
 
   return (
     <Card className="w-full mb-4">
@@ -62,21 +64,21 @@ const AnimalsCard = ({ animal }: AnimalsCardProps) => {
           {isExpanded && (
             <>
               <h4 className="text-sm font-medium mt-4">Diseases:</h4>
-              {diseaseEvents.length > 0 ? (
-                diseaseEvents.map((event) => (
-                  <div key={event.id} className="bg-gray-100 p-2 rounded mb-2">
+              {allDiseases.length > 0 ? (
+                allDiseases.map((disease) => (
+                  <div key={disease.id} className="bg-gray-100 p-2 rounded mb-2">
                     <div className="flex justify-between">
                       <span className="text-sm font-medium">Disease:</span>
-                      <span className="text-sm">{event.disease?.name}</span>
+                      <span className="text-sm">{disease.name}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm font-medium">Observation:</span>
-                      <span className="text-sm">{event.disease?.observation}</span>
+                      <span className="text-sm">{disease.observation}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm font-medium">Date:</span>
                       <span className="text-sm">
-                        {new Date(event.date).toLocaleDateString()}
+                        {new Date(disease.createdAt).toLocaleDateString()}
                       </span>
                     </div>
                   </div>
