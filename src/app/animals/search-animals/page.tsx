@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -17,8 +18,20 @@ export default function SearchAnimalPage() {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    if (status === 'unauthenticated') {
+      router.push('/login');
+    }
+  }, [status, router]);
 
   const handleSearch = async () => {
+    if (status !== 'authenticated') {
+      setError('You must be logged in to search animals.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -43,6 +56,11 @@ export default function SearchAnimalPage() {
   };
 
   const handleViewAll = async () => {
+    if (status !== 'authenticated') {
+      setError('You must be logged in to view animals.');
+      return;
+    }
+
     setIsLoading(true);
     setError(null);
 
@@ -62,9 +80,17 @@ export default function SearchAnimalPage() {
     }
   };
 
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'unauthenticated') {
+    return null; // The useEffect hook will redirect to login page
+  }
+
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Search Animals</h1>
+      <h1 className="text-2xl font-bold mb-6">Search Your Animals</h1>
       
       <Card className="mb-6">
         <CardContent className="pt-6">
@@ -100,7 +126,7 @@ export default function SearchAnimalPage() {
               disabled={isLoading}
               className="w-full"
             >
-              View All Animals
+              View All Your Animals
             </Button>
           </div>
         </CardContent>
@@ -123,7 +149,7 @@ export default function SearchAnimalPage() {
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
-          No animals found. Try a different search or view all animals.
+          No animals found. Try a different search or view all your animals.
         </div>
       )}
     </div>

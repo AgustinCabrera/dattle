@@ -1,41 +1,32 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { NextRequest, NextResponse } from 'next/server';
+import prisma from '@/app/lib/prisma';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-const prisma = new PrismaClient()
-
-export async function GET(request: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const animals = await prisma.animal.findMany(
-      { include: { events: true } }
-    )
-    if (!animals) {
-      return NextResponse.json({ error: 'Animals not found' }, { status: 404 })
+    const session = await getServerSession(authOptions);
+    
+    if (!session || !session.user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    return new NextResponse(JSON.stringify(animals), { status: 200 })
-  }
-  catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch animals' }, { status: 500 })
-  }
-}
+    const body = await request.json();
+    const { tag, breed, birthDate } = body;
 
-
-export async function POST(request: Request) {
-  try {
-    const body = await request.json()
-    if(!body){
-      return new NextResponse(JSON.stringify({ error: 'Fields not filled succesfully' }), { status: 400 })
-    }
     const animal = await prisma.animal.create({
       data: {
-        tag: body.tag,
-        breed: body.breed,
-        birthDate: new Date(body.birthDate)
+        tag,
+        breed,
+        birthDate: new Date(birthDate),
+        ownerId: session.user.id, // Associate the animal with the current user
       },
-    })
-    return new NextResponse(JSON.stringify(animal), { status: 201 })
+    });
+
+    return NextResponse.json(animal, { status: 201 });
   } catch (error) {
-    console.error(error);
-    return NextResponse.json({ error: 'Failed to create animal', details: error.message }, { status: 500 });
+    console.error('Error creating animal:', error);
+    return NextResponse.json({ error: 'Failed to create animal' }, { status: 500 });
   }
 }
+

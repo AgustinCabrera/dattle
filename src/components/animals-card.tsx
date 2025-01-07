@@ -3,18 +3,11 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
-interface Disease {
-  id: string;
-  name: string;
-  observation: string;
-  createdAt: string;
-}
-
 interface Event {
   id: string;
   type: string;
   date: string;
-  diseases: Disease[];
+  description: string;
 }
 
 interface Animal {
@@ -23,6 +16,9 @@ interface Animal {
   breed: string;
   createdAt: string;
   events: Event[];
+  owner: {
+    name: string;
+  };
 }
 
 interface AnimalsCardProps {
@@ -31,9 +27,6 @@ interface AnimalsCardProps {
 
 const AnimalsCard = ({ animal }: AnimalsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
-  
-  // Flatten all diseases from all events
-  const allDiseases = animal.events.flatMap(event => event.diseases);
 
   return (
     <Card className="w-full mb-4">
@@ -56,6 +49,10 @@ const AnimalsCard = ({ animal }: AnimalsCardProps) => {
             <span className="text-sm">{animal.breed}</span>
           </div>
           <div className="flex justify-between">
+            <span className="text-sm font-medium">Owner:</span>
+            <span className="text-sm">{animal.owner.name}</span>
+          </div>
+          <div className="flex justify-between">
             <span className="text-sm font-medium">Date:</span>
             <span className="text-sm">
               {new Date(animal.createdAt).toLocaleDateString()}
@@ -63,28 +60,28 @@ const AnimalsCard = ({ animal }: AnimalsCardProps) => {
           </div>
           {isExpanded && (
             <>
-              <h4 className="text-sm font-medium mt-4">Diseases:</h4>
-              {allDiseases.length > 0 ? (
-                allDiseases.map((disease) => (
-                  <div key={disease.id} className="bg-gray-100 p-2 rounded mb-2">
+              <h4 className="text-sm font-medium mt-4">Events:</h4>
+              {animal.events.length > 0 ? (
+                animal.events.map((event) => (
+                  <div key={event.id} className="bg-gray-100 p-2 rounded mb-2">
                     <div className="flex justify-between">
-                      <span className="text-sm font-medium">Disease:</span>
-                      <span className="text-sm">{disease.name}</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm font-medium">Observation:</span>
-                      <span className="text-sm">{disease.observation}</span>
+                      <span className="text-sm font-medium">Type:</span>
+                      <span className="text-sm">{event.type}</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-sm font-medium">Date:</span>
                       <span className="text-sm">
-                        {new Date(disease.createdAt).toLocaleDateString()}
+                        {new Date(event.date).toLocaleDateString()}
                       </span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm font-medium">Description:</span>
+                      <span className="text-sm">{event.description}</span>
                     </div>
                   </div>
                 ))
               ) : (
-                <div className="text-sm text-gray-500">No diseases recorded for this animal.</div>
+                <div className="text-sm text-gray-500">No events recorded for this animal.</div>
               )}
             </>
           )}

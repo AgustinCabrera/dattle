@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { MilkIcon as Cow, Heart, Baby, Stethoscope, LayoutDashboard } from 'lucide-react'
+import { MilkIcon as Cow, Heart, Baby, Stethoscope, LayoutDashboard,ChartNoAxesCombined,BookUser } from 'lucide-react'
 import { cn } from "../lib/utils"
 import { Button } from "../../components/ui/button"
 
@@ -34,6 +34,16 @@ export function DashboardNav() {
       icon: Stethoscope,
       title: "Diseases",
     },
+    {
+      href: "/analytics",
+      icon: ChartNoAxesCombined,
+      title: "Analytics",
+    },
+    {
+      href: "/administration",
+      icon: BookUser,
+      title: "Administration",
+    }
   ]
 
   return (

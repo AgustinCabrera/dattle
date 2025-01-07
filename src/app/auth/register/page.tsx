@@ -5,12 +5,45 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { signIn } from 'next-auth/react';
 
 export default function RegisterPage() {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleBackClick = () => {
-        router.push('/');
+  const handleSubmit = async(e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch('/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+
+      if (res.ok) {
+        // Registration successful, now sign in
+        const result = await signIn('credentials', {
+          redirect: false,
+          email,
+          password,
+        });
+
+        if (result?.error) {
+          // Handle sign-in error
+          console.error('Sign-in error:', result.error);
+        } else {
+          // Redirect to dashboard on successful sign-in
+          router.push('/dashboard');
+        }
+      } else {
+        // Handle registration error
+        console.error('Registration failed');
+      }
+    } catch (error) {
+      console.error('Error during registration:', error);
+    }
     };
   return (
     <div className='flex items-center justify-center h-screen'>
@@ -47,7 +80,7 @@ export default function RegisterPage() {
                   Sign In here
                 </Link>
               </div>
-              <Button onClick={handleBackClick} className="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-1  px-2 rounded transition-all">
+              <Button onClick={handleSubmit} className="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-1  px-2 rounded transition-all">
                 <ArrowLeft className="w-5 h-5 mr-3" />
                 Back
               </Button>

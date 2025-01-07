@@ -13,74 +13,62 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Gender {
-  male
-  female
-}
+
 model User {
-  id        String   @id @default(uuid()) // Primary Key
-  email     String   @unique // Unique email for the user
-  password  String @unique // Unique password for the user
-  name      String // Name for the user
-  animals   Animal[] // One-to-many relationship with animals
-  createdAt DateTime @default(now()) // date of creation
-  updatedAt DateTime @updatedAt // date of update
-  role      String  @default("user")
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String
+  role      String   @default("user")
+  animals   Animal[] 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Animal {
-  id        String   @id @default(uuid()) // Primary Key
-  tag       String   @unique // Unique identifier for the animal
-  breed     String?   // Breed of the animal
-  birthDate DateTime? // Date of birth
-  ownerId   String?   // Foreign Key for User
-  owner     User?     @relation(fields: [ownerId], references: [id], onDelete: Cascade) // One-to-one relationship with user
-  events    Event[]  // One-to-many relationship with events
-  births    Births[] // One-to-many relationship with births
-  heat      HeatService[] // One-to-many relationship with heat services
-  createdAt DateTime @default(now()) // date of creation
-  updatedAt DateTime @updatedAt // date of update
+  id        String   @id @default(uuid())
+  tag       String
+  breed     String?
+  birthDate DateTime?
+  ownerId   String   
+  owner     User     @relation(fields: [ownerId], references: [id]) 
+  events    Event[]
+  births    Births[]
+  heat      HeatService[]
+  diseases  Disease[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([tag, ownerId]) 
 }
 
 model Event {
-  id           String        @id @default(uuid()) // Primary Key for Event
-  type         String        // Type of the event: Heat, Birth, Disease
-  date         DateTime      // Date of the event
-  description  String?       // Description for the event
-  animalTag    String        // Foreign Key for Animal 
-  animal       Animal?        @relation(fields: [animalTag], references: [tag], onDelete: Cascade) // One-to-one
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  
-  heatServices HeatService[] // One-to-many relationship with heat services
-  diseases     Disease[]     // One-to-many relationship with diseases
-  births       Births[]       // One-to-many relationship with births
-}
-
-enum EventType{
-  HEAT
-  BIRTH
-  DISEASE
+  id          String   @id @default(cuid())
+  type        String
+  date        DateTime
+  description String
+  animalId    String
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model HeatService {
-  id              String   @id @default(uuid()) // Unique identifier for the record
-  eventId         String?   // Reference to the associated event
-  detectionDate   DateTime? // Date when heat was detected
-  serviceDate     DateTime? // Date of the service (insemination or mating)
-  observation     String   // Result: Pending, Pregnant, Failed
-  event           Event?    @relation(fields: [eventId], references: [id])
-  animalTag       String
-  animal          Animal    @relation(fields: [animalTag], references: [tag])
-  animalTouch     String?   // Result of the touch
+  id        String   @id @default(uuid())
+  animalId  String
+  animal    Animal   @relation(fields: [animalId], references: [id])
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model Disease {
-  id           String   @id @default(uuid()) // Primary Key
+  id           String   @id @default(uuid()) 
+  animalId     String   
   name         String
   observation  String?
-  eventId      String   // Foreign Key for Event
-  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  eventId      String   
+  animal       Animal @relation(fields: [animalId], references: [id])
   createdAt    DateTime @default(now())
 }
 model CommonDisease {
@@ -92,13 +80,11 @@ model CommonDisease {
 }
 
 model Births {
-  id               String   @id @default(uuid()) // Unique identifier for the record
-  eventId          String?   // Reference to the associated event
-  animalTag        String // Foreign Key for Animal
-  birthDate        DateTime // Date of birth
-  pups             Int     // Number of offspring born
-  observation      String   // Additional notes about the birth
-  event            Event?    @relation(fields: [eventId], references: [id])
-  animal           Animal    @relation(fields: [animalTag], references: [tag])
+  id        String   @id @default(uuid())
+  animalId  String
+  animal    Animal   @relation(fields: [animalId], references: [id])
+  date      DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
