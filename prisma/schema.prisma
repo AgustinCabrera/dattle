@@ -13,64 +13,70 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
 model User {
   id        String   @id @default(uuid())
   email     String   @unique
   password  String
   name      String
   role      String   @default("user")
-  animals   Animal[] 
+  animals   Animal[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Animal {
-  id        String   @id @default(uuid())
+  id        String        @id @default(uuid())
   tag       String
   breed     String?
   birthDate DateTime?
-  ownerId   String   
-  owner     User     @relation(fields: [ownerId], references: [id]) 
+  ownerId   String
+  owner     User          @relation(fields: [ownerId], references: [id])
   events    Event[]
   births    Births[]
   heat      HeatService[]
   diseases  Disease[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
 
-  @@unique([tag, ownerId]) 
+  @@unique([tag, ownerId])
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   type        String
   date        DateTime
   description String
   animalId    String
-  animal      Animal   @relation(fields: [animalId], references: [id])
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  heatService HeatService?
+  disease     Disease?
+  births      Births?
+  animal      Animal       @relation(fields: [animalId], references: [id])
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model HeatService {
   id        String   @id @default(uuid())
   animalId  String
   animal    Animal   @relation(fields: [animalId], references: [id])
+  eventId   String   @unique
+  event     Event    @relation(fields: [eventId], references: [id])
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Disease {
-  id           String   @id @default(uuid()) 
-  animalId     String   
-  name         String
-  observation  String?
-  eventId      String   
-  animal       Animal @relation(fields: [animalId], references: [id])
-  createdAt    DateTime @default(now())
+  id          String   @id @default(uuid())
+  animalId    String
+  name        String
+  observation String?
+  eventId     String   @unique
+  event       Event    @relation(fields: [eventId], references: [id])
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  createdAt   DateTime @default(now())
 }
+
 model CommonDisease {
   id          String   @id @default(uuid())
   name        String
@@ -83,8 +89,9 @@ model Births {
   id        String   @id @default(uuid())
   animalId  String
   animal    Animal   @relation(fields: [animalId], references: [id])
+  eventId   String   @unique
+  event     Event    @relation(fields: [eventId], references: [id])
   date      DateTime
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
-

@@ -1,25 +1,44 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { PrismaClient } from '@prisma/client'
+import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import prisma from "@/app/lib/prisma";
 
-const prisma = new PrismaClient()
-
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const events = await prisma.event.findMany({
+      where: {
+        animal: {
+          ownerId: session.user.id
+        }
+      },
       include: { animal: true },
-    })
-    return NextResponse.json(events)
+    });
+    return NextResponse.json(events);
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch events' }, { status: 500 })
+    console.error("Error fetching events:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch events" },
+      { status: 500 }
+    );
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
     console.log("Request body:", body);
 
-    const requiredFields = ['type', 'animalTag', 'description', 'date'];
+    const requiredFields = ["type", "animalTag", "description", "date"];
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json(
@@ -29,30 +48,40 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Check if the animal exists
+    const { animalTag, type, date, description } = body;
+
+    // Check if the animal exists and belongs to the current user
     const animal = await prisma.animal.findUnique({
-      where: { tag: body.animalTag },
+      where: {
+        tag_ownerId: {
+          tag: animalTag,
+          ownerId: session.user.id,
+        },
+      },
     });
 
     if (!animal) {
       return NextResponse.json(
-        { error: `Animal with tag ${body.animalTag} not found` },
+        { error: `Animal with tag ${animalTag} does not exist for this user` },
         { status: 404 }
       );
     }
 
-    const newEvent = await prisma.event.create({
+    const event = await prisma.event.create({
       data: {
-        type: body.type,
-        animalTag: body.animalTag,
-        description: body.description,
-        date: new Date(body.date),
+        animalId: animal.id,
+        type,
+        date: new Date(date),
+        description,
+      },
+      include: {
+        animal: true,
       },
     });
 
-    console.log("New Event Created:", newEvent);
+    console.log("New Event Created:", event);
 
-    return NextResponse.json(newEvent, { status: 201 });
+    return NextResponse.json(event, { status: 201 });
   } catch (error) {
     console.error("Error creating event:", error);
     return NextResponse.json(

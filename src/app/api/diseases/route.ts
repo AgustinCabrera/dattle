@@ -3,14 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 const prisma = new PrismaClient({});
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const diseases = await prisma.disease.findMany({ include: { event: true } });
+    const diseases = await prisma.disease.findMany();
     if (!diseases) {
       return new NextResponse(JSON.stringify({ error: "Diseases not found" }), { status: 404 });
     }
     return new NextResponse(JSON.stringify(diseases), { status: 200 });
-  } catch (error) {
+  } catch {
     return new NextResponse(JSON.stringify({ error: "Failed to fetch diseases" }), { status: 500 });
   }
 }
@@ -30,11 +30,14 @@ export async function POST(req: NextRequest) {
     // Create a new disease associated with an event
     const disease = await prisma.disease.create({
       data: {
+        animalId: body.animalId,
         name: body.name,
         observation: body.observation,
-        event: {
-          connect: { id: body.eventId }, // Link the disease to an existing event
-        },
+        eventId: body.eventId,
+      },
+      include: {
+        event: true,
+        animal: true,
       },
     });
 
