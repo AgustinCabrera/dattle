@@ -1,12 +1,19 @@
-import { NextResponse } from "next/server";
-import prisma from '../../lib/prisma';
+import { NextRequest, NextResponse } from 'next/server';
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import prisma from "@/app/lib/prisma";
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { animalTag, serviceDate, observation, type } = body;
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-    if (!animalTag || !serviceDate) {
+    const body = await req.json();
+    const { animalTag, date, observation, type } = body;
+
+    if (!animalTag || !date) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -14,59 +21,82 @@ export async function POST(req: Request) {
     }
 
     const animal = await prisma.animal.findUnique({
-      where: { tag: String(animalTag) },
+      where: {
+        tag_ownerId: {
+          tag: animalTag,
+          ownerId: session.user.id
+        }
+      }
     });
 
     if (!animal) {
       return NextResponse.json(
-        { error: `Animal with tag ${animalTag} does not exist` },
+        { error: `Animal with tag ${animalTag} does not exist for this user` },
         { status: 404 }
       );
     }
 
-    const heatService = await prisma.heatService.create({
+    const service = await prisma.heatService.create({
       data: {
-        serviceDate: new Date(serviceDate),
-        observation: observation || "",
+        animal: { connect: { id: animal.id } },
+        date: new Date(),
         event: {
           create: {
             type: type || "SERVICE",
-            date: new Date(serviceDate),
+            date: new Date(),
             description: observation || "",
-            animalTag,
+            animal: { connect: { id: animal.id } },
           },
         },
-        animal: {
-          connect: { tag: animalTag },
-        },
+      },
+      include: {
+        event: true,
+        animal: true,
       },
     });
-    console.log(heatService)
-    console.log("Service created successfully:", heatService);
-    return NextResponse.json(heatService, { status: 201 });
+
+    console.log("Service created successfully:", service);
+    return NextResponse.json({ success: true, data: service }, { status: 201 });
   } catch (error) {
-    console.error("Error in POST /api/service:", error.message, error.stack);
+    console.error("Error in POST /api/service:", error);
     return NextResponse.json(
-      { error: "Failed to create heat" },
+      { 
+        error: "Failed to create service", 
+        details: error instanceof Error ? error.message : "Unknown error" 
+      },
       { status: 500 }
     );
   }
 }
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
-    const services = await prisma.heatService.findMany({
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const service = await prisma.heatService.findMany({
+      where: {
+        animal: {
+          ownerId: session.user.id
+        }
+      },
       include: { 
         event: true,
         animal: true
       },
     });
-    return NextResponse.json(services);
+    return NextResponse.json({ success: true, data: service });
   } catch (error) {
-    console.error("Error in GET /api/heat:", error.message, error.stack);
+    console.error("Error in GET /api/service:", error);
     return NextResponse.json(
-      { error: "Failed to fetch heats" },
+      { 
+        error: "Failed to fetch services", 
+        details: error instanceof Error ? error.message : "Unknown error" 
+      },
       { status: 500 }
     );
   }
 }
+

@@ -4,22 +4,31 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import React, { useState } from "react";
+import { useSession } from "next-auth/react";
 
 const RegisterServicePage = () => {
   const [formData, setFormData] = useState({
     animalTag: "",
     observation: "",
-    serviceDate: "", 
-
+    date: "",
   });
 
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
+    setIsLoading(true);
+
     try {
+      if (!session) {
+        throw new Error("You must be logged in to register service");
+      }
+
       const response = await fetch("/api/service", {
         method: "POST",
         headers: {
@@ -27,33 +36,45 @@ const RegisterServicePage = () => {
         },
         body: JSON.stringify({
           type: "SERVICE",
-          animalTag: formData.animalTag,
-          observation: formData.observation,
-          serviceDate: formData.serviceDate, 
+          animalTag: formData.animalTag.trim(),
+          observation: formData.observation.trim(),
+          date: formData.date,
         }),
       });
 
-      if (!response.ok) {
-        throw new Error("Failed to register Service");
+      const data = await response.json();
+
+      if (!formData.animalTag.trim() || !formData.date) {
+        setError("Please fill in all required fields");
+        setIsLoading(false);
+        return;
+      }
+
+      if (data.success) {
+        alert("Service registered successfully");
+        console.log("Service registered successfully");
+
+        console.log({
+          type: "SERVICE",
+          animalTag: formData.animalTag,
+          observation: formData.observation,
+          serviceDate: formData.date,
+        });
+
+        setFormData({
+          animalTag: "",
+          observation: "",
+          date: "",
+        });
       }
       alert("Service registered successfully");
       console.log("Service registered successfully");
-
-      console.log({
-        type: "SERVICE",
-        animalTag: formData.animalTag,
-        observation: formData.observation,
-        serviceDate: formData.serviceDate,
-      })
-
-      setFormData({
-        animalTag: "",
-        observation: "",
-        serviceDate: "",
-      });
     } catch (error) {
       console.error("Error registering Service:", error);
-      alert("Failed to register Service");
+      setError(error instanceof Error ? error.message : "An unknown error occurred");
+    }
+    finally{
+      setIsLoading(false);
     }
   };
 
@@ -81,9 +102,9 @@ const RegisterServicePage = () => {
               </label>
               <Input
                 type="datetime-local"
-                value={formData.serviceDate}
+                value={formData.date}
                 onChange={(e) =>
-                  setFormData({ ...formData, serviceDate: e.target.value })
+                  setFormData({ ...formData, date: e.target.value })
                 }
               />
             </div>

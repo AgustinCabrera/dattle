@@ -45,6 +45,8 @@ const RegisterDiseaseComponent = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
     try {
       // Create an event for the animal
@@ -69,23 +71,22 @@ const RegisterDiseaseComponent = () => {
       const eventData = await eventResponse.json();
       const eventId = eventData.id;
 
-      // Save the disease record linked to the event
-      const diseaseData = {
-        name: formData.name,
-        observation: formData.observation,
-        eventId,
-      };
-
       const diseaseResponse = await fetch("/api/diseases", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(diseaseData),
+        body: JSON.stringify({
+          animalTag: formData.animalTag,
+          name: formData.name,
+          observation: formData.observation,
+          eventId,
+        }),
       });
 
       if (!diseaseResponse.ok) {
-        throw new Error("Failed to save disease data");
+        const errorData = await diseaseResponse.json();
+        throw new Error(`Failed to save disease data: ${errorData.error}`);
       }
 
       setFormData({
