@@ -12,10 +12,9 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     console.log("Request body:", body);
-    const { animalTag, birthDate, pups, observation, type } = body;
+    const { animalTag, birthDate, pups, eventId } = body;
 
-    // Input validation
-    if (!animalTag || !birthDate || !pups) {
+    if (!animalTag || !birthDate || !pups || !eventId) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
     }
 
@@ -37,17 +36,10 @@ export async function POST(req: NextRequest) {
 
     const birth = await prisma.births.create({
       data: {
-        animalId: animal.id,
+        animal: { connect: { id: animal.id } },
         date: new Date(birthDate),
         pups: parseInt(pups, 10),
-        event: {
-          create: {
-            type: type || 'BIRTH',
-            date: new Date(birthDate),
-            description: observation,
-            animalId: animal.id,
-          }
-        },
+        event: { connect: { id: eventId } },
       },
       include: {
         event: true,
@@ -56,10 +48,13 @@ export async function POST(req: NextRequest) {
     });
 
     console.log("Birth created successfully:", birth);
-    return NextResponse.json(birth, { status: 201 });
+    return NextResponse.json({ success: true, data: birth }, { status: 201 });
   } catch (error) {
     console.error("Error in POST /api/births:", error);
-    return NextResponse.json({ error: 'Failed to create birth' }, { status: 500 });
+    return NextResponse.json(
+      { error: 'Failed to create birth', details: error instanceof Error ? error.message : 'Unknown error' },
+      { status: 500 }
+    );
   }
 }
 

@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const RegisterBirthComponent = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +27,10 @@ const RegisterBirthComponent = () => {
     setSuccess(null);
 
     try {
-      const response = await fetch("/api/birth", {
+      {
+        /*First i create an event id which then i consume for the birth record*/
+      }
+      const eventResponse = await fetch("/api/events", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -34,35 +38,49 @@ const RegisterBirthComponent = () => {
         body: JSON.stringify({
           type: "BIRTH",
           animalTag: formData.animalTag.trim(),
-          observation: formData.observation.trim(),
-          birthDate:
-            formData.birthDate || new Date().toISOString().slice(0, 10),
-          pups: formData.pups,
+          description: formData.observation.trim(),
+          date: formData.birthDate || new Date().toISOString().slice(0, 10),
         }),
       });
 
-      const contentType = response.headers.get("content-type");
-      if (contentType && contentType.indexOf("application/json") !== -1) {
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to create birth");
-        }
-
-        setSuccess("Birth registered successfully");
-        setFormData({
-          animalTag: "",
-          birthDate: "",
-          pups: "",
-          observation: "",
-        });
-
-        alert("Birth registered successfully");
-      } else {
-        const text = await response.text();
-        console.error("Non-JSON response:", text);
-        throw new Error("Received non-JSON response from server");
+      if (!eventResponse.ok) {
+        const errorData = await eventResponse.json();
+        throw new Error(errorData.error || "Failed to create event");
       }
+
+      const eventData = await eventResponse.json();
+      const eventId = eventData.id;
+
+      {
+        /*I create the birth record with the event id*/
+      }
+      const birthResponse = await fetch("/api/birth", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          animalTag: formData.animalTag.trim(),
+          birthDate:
+            formData.birthDate || new Date().toISOString().slice(0, 10),
+          pups: parseInt(formData.pups, 10),
+          eventId: eventId,
+        }),
+      });
+
+      if (!birthResponse.ok) {
+        const errorData = await birthResponse.json();
+        throw new Error(errorData.error || "Failed to create birth record");
+      }
+
+      const birthData = await birthResponse.json();
+      setSuccess("Birth registered successfully");
+      setFormData({
+        animalTag: "",
+        birthDate: "",
+        pups: "",
+        observation: "",
+      });
     } catch (error) {
       console.error("Error creating birth:", error);
       setError(
@@ -76,6 +94,7 @@ const RegisterBirthComponent = () => {
   return (
     <div className="container mx-auto py-6 max-w-2xl">
       <h1 className="text-2xl font-bold mb-6">Register Birth</h1>
+
       <Card>
         <CardContent className="pt-6">
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -133,6 +152,7 @@ const RegisterBirthComponent = () => {
                   setFormData({ ...formData, observation: e.target.value })
                 }
                 placeholder="Enter observation"
+                required
               />
             </div>
             <Button type="submit" className="w-full" disabled={isLoading}>
@@ -146,9 +166,15 @@ const RegisterBirthComponent = () => {
       </Card>
 
       {error && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
-          {error}
-        </div>
+        <Alert variant="destructive" className="mt-4">
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {success && (
+        <Alert className="mt-4">
+          <AlertDescription>{success}</AlertDescription>
+        </Alert>
       )}
     </div>
   );

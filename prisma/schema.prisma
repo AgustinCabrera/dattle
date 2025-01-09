@@ -56,14 +56,16 @@ model Event {
 }
 
 model HeatService {
-  id        String   @id @default(uuid())
-  animalId  String
-  animal    Animal   @relation(fields: [animalId], references: [id])
-  eventId   String   @unique
-  event     Event    @relation(fields: [eventId], references: [id])
-  date      DateTime
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(uuid())
+  animalId    String
+  animal      Animal   @relation(fields: [animalId], references: [id])
+  eventId     String   @unique
+  event       Event    @relation(fields: [eventId], references: [id])
+  date        DateTime
+  observation String?
+  animalTouch String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Disease {
@@ -92,6 +94,7 @@ model Births {
   eventId   String   @unique
   event     Event    @relation(fields: [eventId], references: [id])
   date      DateTime
+  pups      Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

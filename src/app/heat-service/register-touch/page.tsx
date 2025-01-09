@@ -17,7 +17,7 @@ const RegisterTouchPage = () => {
     animalTag: "",
     animalTouch: "",
     observation: "",
-    detectionDate: "",
+    date: "",
   });
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +35,7 @@ const RegisterTouchPage = () => {
           animalTag: formData.animalTag.trim(),
           animalTouch: formData.animalTouch.trim(),
           observation: formData.observation.trim(),
-          detectionDate: formData.detectionDate,
+          date: formData.date,
         }),
       });
 
@@ -50,14 +50,14 @@ const RegisterTouchPage = () => {
         animalTag: formData.animalTag,
         animalTouch: formData.animalTouch,
         observation: formData.observation,
-        detectionDate: formData.detectionDate,
+        date: formData.date,
       });
 
       setFormData({
         animalTag: "",
         animalTouch: "",
         observation: "",
-        detectionDate: "",
+        date: "",
       });
     } catch (error) {
       console.error("Error registering touch:", error);
@@ -123,9 +123,9 @@ const RegisterTouchPage = () => {
               </label>
               <Input
                 type="datetime-local"
-                value={formData.detectionDate}
+                value={formData.date}
                 onChange={(e) =>
-                  setFormData({ ...formData, detectionDate: e.target.value })
+                  setFormData({ ...formData, date: e.target.value })
                 }
               />
             </div>

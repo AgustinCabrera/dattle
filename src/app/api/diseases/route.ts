@@ -49,7 +49,6 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { animalTag, name, observation, eventId } = body;
 
-    // Validate the incoming request body
     if (!animalTag || !observation || !name || !eventId) {
       return new NextResponse(
         JSON.stringify({ error: "Fields not filled successfully" }),

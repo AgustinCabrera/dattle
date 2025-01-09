@@ -1,17 +1,23 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { DiseaseCard } from '@/components/disease-card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Card, CardContent } from '@/components/ui/card';
-import { Search } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import DiseaseCard from "@/components/disease-card";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent } from "@/components/ui/card";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function SearchDiseasePage() {
-  const [searchType, setSearchType] = useState<'tag' | 'disease'>('tag');
-  const [searchValue, setSearchValue] = useState('');
+  const [searchType, setSearchType] = useState<"tag" | "disease">("tag");
+  const [searchValue, setSearchValue] = useState("");
   const [diseases, setDiseases] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -23,20 +29,20 @@ export default function SearchDiseasePage() {
     setError(null);
 
     try {
-      const queryParam = searchType === 'tag' ? 'animalTag' : 'disease';
+      const queryParam = searchType === "tag" ? "animalTag" : "disease";
       const response = await fetch(
         `/api/diseases/search?${queryParam}=${encodeURIComponent(searchValue)}`
       );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch diseases');
+        throw new Error("Failed to fetch diseases");
       }
 
       const data = await response.json();
       setDiseases(data);
     } catch (err) {
-      setError('An error occurred while searching. Please try again.');
-      console.error('Search error:', err);
+      setError("An error occurred while searching. Please try again.");
+      console.error("Search error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -47,16 +53,16 @@ export default function SearchDiseasePage() {
     setError(null);
 
     try {
-      const response = await fetch('/api/diseases/search');
+      const response = await fetch("/api/diseases/search");
       if (!response.ok) {
-        throw new Error('Failed to fetch diseases');
+        throw new Error("Failed to fetch diseases");
       }
 
       const data = await response.json();
       setDiseases(data);
     } catch (err) {
-      setError('An error occurred while fetching diseases. Please try again.');
-      console.error('Fetch error:', err);
+      setError("An error occurred while fetching diseases. Please try again.");
+      console.error("Fetch error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -65,14 +71,16 @@ export default function SearchDiseasePage() {
   return (
     <div className="container mx-auto py-6 max-w-2xl">
       <h1 className="text-2xl font-bold mb-6">Search Diseases</h1>
-      
+
       <Card className="mb-6">
         <CardContent className="pt-6">
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
               <Select
                 value={searchType}
-                onValueChange={(value: 'tag' | 'disease') => setSearchType(value)}
+                onValueChange={(value: "tag" | "disease") =>
+                  setSearchType(value)
+                }
               >
                 <SelectTrigger className="w-[180px]">
                   <SelectValue placeholder="Search by..." />
@@ -83,11 +91,13 @@ export default function SearchDiseasePage() {
                 </SelectContent>
               </Select>
               <div className="flex-1">
-                <Input 
-                  placeholder={`Enter ${searchType === 'tag' ? 'animal tag' : 'disease name'}...`}
+                <Input
+                  placeholder={`Enter ${
+                    searchType === "tag" ? "animal tag" : "disease name"
+                  }...`}
                   value={searchValue}
                   onChange={(e) => setSearchValue(e.target.value)}
-                />  
+                />
                 {/* creates a text input field that updates the searchValue state when the user types, 
                 and has a dynamic placeholder based on the selected search type. */}
               </div>
@@ -106,7 +116,7 @@ export default function SearchDiseasePage() {
             </Button>
           </div>
         </CardContent>
-        <Button onClick={() => router.push('/diseases')}>Back</Button>
+        <Button onClick={() => router.push("/diseases")}>Back</Button>
       </Card>
 
       {error && (
@@ -119,9 +129,13 @@ export default function SearchDiseasePage() {
         <div className="text-center py-8">Loading...</div>
       ) : diseases.length > 0 ? (
         <div className="space-y-4">
-          {diseases.map((disease) => (
-            <DiseaseCard key={disease.id} disease={disease} />
-          ))}
+          {diseases.map((disease) =>
+            disease ? (
+              <DiseaseCard key={disease.id} animal={disease} />
+            ) : (
+              <div key={disease.id}>Invalid data for this animal</div>
+            )
+          )}
         </div>
       ) : (
         <div className="text-center py-8 text-gray-500">
@@ -131,4 +145,3 @@ export default function SearchDiseasePage() {
     </div>
   );
 }
-

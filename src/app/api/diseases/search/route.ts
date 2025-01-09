@@ -1,13 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/app/lib/prisma";
+import { authOptions } from "../../auth/[...nextauth]/route";
+import { getServerSession } from "next-auth";
 
-const prisma = new PrismaClient();
 
 export async function GET(request: NextRequest) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || !session.user) {
+      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+      });
+    }
+    
     const searchParams = request.nextUrl.searchParams;
-    const animalTag = searchParams.get('animalTag');
-    const diseaseName = searchParams.get('disease');
+
+    const animalTag = searchParams.get("animalTag");
+    const diseaseName = searchParams.get("disease");
 
     let whereClause = {};
 
@@ -15,37 +24,40 @@ export async function GET(request: NextRequest) {
       whereClause = {
         event: {
           animal: {
-            tag: animalTag
-          }
-        }
+            tag: animalTag,
+          },
+        },
       };
     } else if (diseaseName) {
       whereClause = {
-        name: diseaseName
+        name: diseaseName,
       };
     }
 
     const diseases = await prisma.disease.findMany({
-      where: whereClause,
-      include: {
-        event: {
-          include: {
-            animal: true
-          }
-        }
+      where: {
+        animal: {
+          ownerId: session.user.id,
+        },
       },
-      orderBy: {
-        createdAt: 'desc'
-      }
+      include: {
+        event: true,
+        animal: true,
+      },
     });
 
-    return NextResponse.json(diseases);
+    if (!diseases) {
+      return new NextResponse(JSON.stringify({ error: "Diseases not found" }), {
+        status: 404,
+      });
+    }
+
+  return new NextResponse(JSON.stringify(diseases), { status: 200 });
   } catch (error) {
-    console.error('Search error:', error);
+    console.error("Search error:", error);
     return NextResponse.json(
-      { error: 'Failed to search diseases' },
+      { error: "Failed to search diseases" },
       { status: 500 }
     );
   }
 }
-

@@ -1,28 +1,28 @@
-import React, { useState } from 'react'
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-
-interface Disease {
-  id: string;
-  name: string;
-  observation: string;
-  createdAt: string;
-}
-
-interface Event {
-  id: string;
-  type: string;
-  date: string;
-  diseases: Disease[]; // Changed to array of diseases
-}
+import React, { useState } from "react";
+import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { ChevronDown, ChevronUp } from "lucide-react";
 
 interface Animal {
   id: string;
   tag: string;
   breed: string;
   createdAt: string;
-  events: Event[];
+  events: [
+    {
+      id: string;
+      type: string;
+      date: string;
+      diseases: [
+        {
+          id: string;
+          name: string;
+          observation: string;
+          createdAt: string;
+        }
+      ];
+    }
+  ];
 }
 
 interface AnimalsCardProps {
@@ -31,9 +31,15 @@ interface AnimalsCardProps {
 
 const AnimalsCard = ({ animal }: AnimalsCardProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
+
+  if (!animal) {
+    return <div>No data available for this animal.</div>;
+  }
   
   // Filter events that have diseases
-  const diseaseEvents = animal.events.filter(event => event.diseases && event.diseases.length > 0);
+  const diseaseEvents = (animal.events || []).filter(
+    (event) => event.diseases && event.diseases.length > 0
+  );
 
   return (
     <Card className="w-full mb-4">
@@ -65,15 +71,20 @@ const AnimalsCard = ({ animal }: AnimalsCardProps) => {
             <>
               <h4 className="text-sm font-medium mt-4">Diseases:</h4>
               {diseaseEvents.length > 0 ? (
-                diseaseEvents.map((event) => (
+                diseaseEvents.map((event) =>
                   event.diseases.map((disease) => (
-                    <div key={disease.id} className="bg-gray-100 p-2 rounded mb-2">
+                    <div
+                      key={disease.id}
+                      className="bg-gray-100 p-2 rounded mb-2"
+                    >
                       <div className="flex justify-between">
                         <span className="text-sm font-medium">Disease:</span>
                         <span className="text-sm">{disease.name}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-sm font-medium">Observation:</span>
+                        <span className="text-sm font-medium">
+                          Observation:
+                        </span>
                         <span className="text-sm">{disease.observation}</span>
                       </div>
                       <div className="flex justify-between">
@@ -84,9 +95,11 @@ const AnimalsCard = ({ animal }: AnimalsCardProps) => {
                       </div>
                     </div>
                   ))
-                ))
+                )
               ) : (
-                <div className="text-sm text-gray-500">No diseases recorded for this animal.</div>
+                <div className="text-sm text-gray-500">
+                  No diseases recorded for this animal.
+                </div>
               )}
             </>
           )}
@@ -94,7 +107,6 @@ const AnimalsCard = ({ animal }: AnimalsCardProps) => {
       </CardContent>
     </Card>
   );
-}
+};
 
 export default AnimalsCard;
-
