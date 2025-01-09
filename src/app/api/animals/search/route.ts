@@ -1,19 +1,24 @@
-import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/app/lib/prisma';
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/app/lib/prisma";
 import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-   
+
     if (!session || !session.user) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const searchParams = request.nextUrl.searchParams;
-    const animalTag = searchParams.get('animalTag');
-    const breed = searchParams.get('breed');
+    const animalTag = searchParams.get("animalTag");
+    const breed = searchParams.get("breed");
+
+    {
+      /* where clause in a query, 
+      it tells Prisma to only retrieve records that match the given criteria */
+    }
 
     let whereClause: any = {
       ownerId: session.user.id,
@@ -25,6 +30,10 @@ export async function GET(request: NextRequest) {
       whereClause.breed = { contains: breed };
     }
 
+    {
+      /* Animals search logic */
+    }
+
     const animals = await prisma.animal.findMany({
       where: whereClause,
       include: {
@@ -34,38 +43,37 @@ export async function GET(request: NextRequest) {
             type: true,
             date: true,
             description: true,
-          }
+          },
         },
         births: {
           select: {
             id: true,
             date: true,
-          }
+          },
         },
         heat: {
           select: {
             id: true,
             date: true,
-          }
+          },
         },
         owner: {
           select: {
             name: true,
-          }
+          },
         },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: "desc",
+      },
     });
 
     return NextResponse.json(animals);
   } catch (error) {
-    console.error('Search error:', error);
+    console.error("Search error:", error);
     return NextResponse.json(
-      { error: 'Failed to search animals' },
+      { error: "Failed to search animals" },
       { status: 500 }
     );
   }
 }
-

@@ -1,58 +1,108 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/app/lib/prisma";
-import { authOptions } from "../../auth/[...nextauth]/route";
-import { getServerSession } from "next-auth";
-
 
 export async function GET(request: NextRequest) {
   try {
-    const session = await getServerSession(authOptions);
-    if (!session || !session.user) {
-      return new NextResponse(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-      });
-    }
-    
     const searchParams = request.nextUrl.searchParams;
-
     const animalTag = searchParams.get("animalTag");
     const diseaseName = searchParams.get("disease");
 
-    let whereClause = {};
-
     if (animalTag) {
-      whereClause = {
-        event: {
-          animal: {
-            tag: animalTag,
+      {
+        /*If searching by animal tag, get the animal and its diseases*/
+      }
+      const animal = await prisma.animal.findFirst({
+        where: {
+          tag: animalTag,
+        },
+        include: {
+          events: {
+            where: {
+              // here i only fetch events with disease information
+              type: "DISEASE",
+              disease: {
+                isNot: null,
+              },
+            },
+            include: {
+              disease: {
+                select: {
+                  id: true,
+                  name: true,
+                  observation: true,
+                },
+              },
+            },
+            orderBy: {
+              date: "desc",
+            },
           },
         },
-      };
-    } else if (diseaseName) {
-      whereClause = {
-        name: diseaseName,
-      };
-    }
-
-    const diseases = await prisma.disease.findMany({
-      where: {
-        animal: {
-          ownerId: session.user.id,
-        },
-      },
-      include: {
-        event: true,
-        animal: true,
-      },
-    });
-
-    if (!diseases) {
-      return new NextResponse(JSON.stringify({ error: "Diseases not found" }), {
-        status: 404,
       });
-    }
 
-  return new NextResponse(JSON.stringify(diseases), { status: 200 });
+      {
+        /*ensured that the API always returns an array of animals, even when searching by tag*/
+      }
+      if (!animal) {
+        return NextResponse.json([], { status: 200 });
+      }
+      return NextResponse.json([animal]);
+    } else {
+      // If searching by disease name or viewing all
+      const animals = await prisma.animal.findMany({
+        where: diseaseName
+          ? {
+              events: {
+                some: {
+                  type: "DISEASE",
+                  disease: {
+                    name: {
+                      contains: diseaseName,
+                      mode: "insensitive",
+                    },
+                  },
+                },
+              },
+            }
+          : {
+              events: {
+                some: {
+                  type: "DISEASE",
+                  disease: {
+                    isNot: null,
+                  },
+                },
+              },
+            },
+        include: {
+          events: {
+            where: {
+              type: "DISEASE",
+              disease: {
+                isNot: null,
+              },
+            },
+            include: {
+              disease: {
+                select: {
+                  id: true,
+                  name: true,
+                  observation: true,
+                },
+              },
+            },
+            orderBy: {
+              date: "desc",
+            },
+          },
+        },
+        orderBy: {
+          tag: "asc",
+        },
+      });
+
+      return NextResponse.json(animals);
+    }
   } catch (error) {
     console.error("Search error:", error);
     return NextResponse.json(
@@ -60,4 +110,11 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+{
+  /*
+  filtering out events without disease information on the server-side, 
+  i reduced the amount of data sent to the client and improve rendering performance 
+  */
 }

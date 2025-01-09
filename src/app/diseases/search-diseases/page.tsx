@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import DiseaseCard from "@/components/disease-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -67,6 +67,7 @@ export default function SearchDiseasePage() {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
