@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -18,20 +17,8 @@ export default function SearchAnimalPage() {
   const [error, setError] = useState<string | null>(null);
 
   const router = useRouter();
-  const { data: session, status } = useSession();
-
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login');
-    }
-  }, [status, router]);
 
   const handleSearch = async () => {
-    if (status !== 'authenticated') {
-      setError('You must be logged in to search animals.');
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
@@ -56,11 +43,6 @@ export default function SearchAnimalPage() {
   };
 
   const handleViewAll = async () => {
-    if (status !== 'authenticated') {
-      setError('You must be logged in to view animals.');
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
 
@@ -79,14 +61,6 @@ export default function SearchAnimalPage() {
       setIsLoading(false);
     }
   };
-
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
-
-  if (status === 'unauthenticated') {
-    return null; // The useEffect hook will redirect to login page
-  }
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">

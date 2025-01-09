@@ -6,6 +6,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { signIn } from 'next-auth/react';
+import { useState } from "react";
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
