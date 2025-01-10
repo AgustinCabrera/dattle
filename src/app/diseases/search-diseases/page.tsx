@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import DiseaseCard from "@/components/disease-card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

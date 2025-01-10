@@ -14,11 +14,20 @@ import { Search } from "lucide-react";
 import React, { useState } from "react";
 
 interface SearchResult {
-  id: string
-  animalTag: string
-  detectionDate: string
-  serviceDate: string | null
-  observation: string
+  id: string;
+  animalTag: string;
+  date: string;
+  observation: string | null;
+  animalTouch?: string | null;
+  serviceDate?: string | null;
+  animal?: {
+    tag: string;
+    breed: string;
+  };
+  event?: {
+    date: string;
+    description: string;
+  };
 }
 
 const SearchPage = () => {
@@ -29,6 +38,7 @@ const SearchPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [noRecordsFound, setNoRecordsFound] = useState(false);
 
   const router = useRouter();
 
@@ -36,29 +46,54 @@ const SearchPage = () => {
     setIsLoading(true);
     setError(null);
     setSearchResults([]);
+    setNoRecordsFound(false);
 
     try {
-      let response
+      let response;
 
-      if (searchType === "service") {
-        response = await fetch(`/api/service/search?service=${encodeURIComponent(searchValue)}`);
-      } else if (searchType === "heat") {
-        response = await fetch(`/api/heat/search?service=${encodeURIComponent(searchValue)}`);
-      } else if (searchType === "touch") {
-        response = await fetch(`/api/heat/touch/search?touch=${encodeURIComponent(searchValue)}`);
+      switch (searchType) {
+        case "heat":
+          response = await fetch(
+            `/api/heat/search?animalTag=${encodeURIComponent(searchValue)}`
+          );
+          break;
+        case "service":
+          response = await fetch(
+            `/api/service/search?service=${encodeURIComponent(searchValue)}`
+          );
+          break;
+        case "touch":
+          response = await fetch(
+            `/api/heat/touch/search?touch=${encodeURIComponent(searchValue)}`
+          );
+          break;
+        default:
+          throw new Error("Invalid search type");
       }
-      if (!response || !response.ok) {
-        throw new Error(`Failed to fetch ${searchType}`);
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Failed to fetch ${searchType}`);
       }
+
       const data = await response.json();
-      setSearchResults(data);
-
+      if (data.length === 0) {
+        setNoRecordsFound(true);
+      } else {
+        setSearchResults(data);
+      }
     } catch (error) {
-      setError("An error occurred while searching. Please try again.");
+      setError(
+        error.message || "An error occurred while searching. Please try again."
+      );
       console.error("Search error:", error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString();
   };
 
   return (
@@ -103,11 +138,19 @@ const SearchPage = () => {
             </div>
           </div>
         </CardContent>
+        <Button onClick={() => router.push("/heat-service")} className="mt-4">
+          Back
+        </Button>
       </Card>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
           {error}
+        </div>
+      )}
+      {noRecordsFound && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+          No records found for the specified animal tag
         </div>
       )}
 
@@ -117,25 +160,39 @@ const SearchPage = () => {
           {searchResults.map((result) => (
             <Card key={result.id} className="mb-4">
               <CardContent className="pt-6">
-                <p><strong>Animal Tag:</strong> {result.animalTag}</p>
-                {
-                  searchType === "heat" && (
-                    <div>
-                      <p><strong>Heat Date:</strong> {new Date(result.detectionDate).toLocaleDateString()}</p>
-                    </div>
-                  )
-                }
-                {searchType === "service" && (
-                  <p><strong>Service Date:</strong> {new Date(result.serviceDate).toLocaleDateString()}</p>
+                <p>
+                  <strong>Animal Tag:</strong>{" "}
+                  {result.animalTag || result.animal?.tag}
+                </p>
+                {result.animal?.breed && (
+                  <p>
+                    <strong>Breed:</strong> {result.animal.breed}
+                  </p>
                 )}
-                <p><strong>Observation:</strong> {result.observation}</p>
+                <p>
+                  <strong>Date:</strong> {formatDate(result.date)}
+                </p>
+                {result.serviceDate && (
+                  <p>
+                    <strong>Service Date:</strong>{" "}
+                    {formatDate(result.serviceDate)}
+                  </p>
+                )}
+                {result.animalTouch && (
+                  <p>
+                    <strong>Animal Touch:</strong> {result.animalTouch}
+                  </p>
+                )}
+                {result.event?.description && (
+                  <p>
+                    <strong>Description:</strong> {result.event.description}
+                  </p>
+                )}
               </CardContent>
             </Card>
           ))}
         </div>
       )}
-
-      <Button onClick={() => router.push("/heat-service")} className="mt-4">Back</Button>
     </div>
   );
 };
