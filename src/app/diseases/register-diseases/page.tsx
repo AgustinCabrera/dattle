@@ -23,7 +23,6 @@ const RegisterDiseaseComponent = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
@@ -89,10 +88,9 @@ const RegisterDiseaseComponent = () => {
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Register Disease</h1>
-
       <Card>
         <CardContent className="pt-6">
+          <h1 className="text-2xl font-bold mb-6">Register Disease</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="animalTag" className="text-sm font-medium">
@@ -122,18 +120,30 @@ const RegisterDiseaseComponent = () => {
                   <SelectValue placeholder="Select a Disease" />
                 </SelectTrigger>
                 <SelectContent>
-                <SelectItem value="anthrax">Anthrax</SelectItem>
-                <SelectItem value="brucellosis">Brucellosis (BCS)</SelectItem>
-                <SelectItem value="pneumonia">Bovine respiratory disease (BRD)</SelectItem>
-                <SelectItem value="spongiform ">Bovine spongiform encephalopathy (BSE)</SelectItem>
-                <SelectItem value="tuberculosis">Bovine tuberculosis (TB)</SelectItem>
-                <SelectItem value="diarrhea">Bovine viral diarrhea (BVD)</SelectItem>
-                <SelectItem value="coccidiosis">Coccidiosis</SelectItem>
-                <SelectItem value="clostridial">Clostridial diseases</SelectItem>
-                <SelectItem value="footandmouth">Foot and mouth disease (FMD)</SelectItem>
-                <SelectItem value="leptospirosis">Leptospirosis</SelectItem>
-                <SelectItem value="mastitis">Mastitis</SelectItem>
-                <SelectItem value="trichomoniasis">Trichomoniasis</SelectItem>
+                  <SelectItem value="anthrax">Anthrax</SelectItem>
+                  <SelectItem value="brucellosis">Brucellosis (BCS)</SelectItem>
+                  <SelectItem value="pneumonia">
+                    Bovine respiratory disease (BRD)
+                  </SelectItem>
+                  <SelectItem value="spongiform ">
+                    Bovine spongiform encephalopathy (BSE)
+                  </SelectItem>
+                  <SelectItem value="tuberculosis">
+                    Bovine tuberculosis (TB)
+                  </SelectItem>
+                  <SelectItem value="diarrhea">
+                    Bovine viral diarrhea (BVD)
+                  </SelectItem>
+                  <SelectItem value="coccidiosis">Coccidiosis</SelectItem>
+                  <SelectItem value="clostridial">
+                    Clostridial diseases
+                  </SelectItem>
+                  <SelectItem value="footandmouth">
+                    Foot and mouth disease (FMD)
+                  </SelectItem>
+                  <SelectItem value="leptospirosis">Leptospirosis</SelectItem>
+                  <SelectItem value="mastitis">Mastitis</SelectItem>
+                  <SelectItem value="trichomoniasis">Trichomoniasis</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -155,7 +165,7 @@ const RegisterDiseaseComponent = () => {
               {isLoading ? "Registering..." : "Register Disease"}
             </Button>
           </form>
-          <Button onClick={() => router.push("/diseases")}>Back</Button>
+          <Button className="w-full mt-4" onClick={() => router.push("/diseases")}>Back</Button>
         </CardContent>
       </Card>
 

@@ -93,9 +93,9 @@ const RegisterAnimalComponents = () => {
                 required
               />
             </div>
-            <Button type="submit">Register Animal</Button>
+            <Button className = "w-full mt-4" type="submit">Register Animal</Button>
           </form>
-          <Button onClick={() => router.push('/animals')}>Back</Button>
+          <Button className = "w-full mt-2"  onClick={() => router.push('/animals')}>Back</Button>
         </CardContent>
       </Card>
       

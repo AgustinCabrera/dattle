@@ -159,7 +159,7 @@ const RegisterBirthComponent = () => {
               {isLoading ? "Registering..." : "Register Birth"}
             </Button>
           </form>
-          <Button onClick={() => router.push("/birth")} className="mt-4">
+          <Button onClick={() => router.push("/birth")} className="w-full mt-4">
             Back
           </Button>
         </CardContent>

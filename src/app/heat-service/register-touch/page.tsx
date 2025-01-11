@@ -67,9 +67,9 @@ const RegisterTouchPage = () => {
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Register Touch</h1>
       <Card>
         <CardContent className="pt-6">
+          <h1 className="text-2xl font-bold mb-6">Register Touch</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="animalTag" className="text-sm font-medium">
@@ -129,9 +129,9 @@ const RegisterTouchPage = () => {
                 }
               />
             </div>
-            <Button type="submit">Register Touch</Button>
           </form>
-          <Button onClick={() => router.push("/heat-service")}>Back</Button>
+            <Button className="w-full mt-4" type="submit">Register Touch</Button>
+            <Button className="w-full mt-2"onClick={() => router.push("/heat-service")}>Back</Button>
         </CardContent>
       </Card>
 

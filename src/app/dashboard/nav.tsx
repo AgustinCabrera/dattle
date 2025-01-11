@@ -1,9 +1,10 @@
 "use client";
+
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { MilkIcon as Cow, Heart, Baby, Stethoscope, LayoutDashboard,ChartNoAxesCombined,BookUser } from 'lucide-react'
-import { cn } from "@/app/lib/cn"
-import { Button } from "../../components/ui/button"
+import { MilkIcon as Cow, Heart, Baby, Stethoscope, LayoutDashboard, BarChartIcon as ChartNoAxesCombined, BookUser } from 'lucide-react'
+import { cn } from "@/app/lib/utils"
+import { Button } from "@/components/ui/button"
 
 export function DashboardNav() {
   const pathname = usePathname()
@@ -47,18 +48,18 @@ export function DashboardNav() {
   ]
 
   return (
-    <nav className="flex flex-col w-64 border-r bg-gray-50/40">
+    <nav className="flex flex-col w-64 border-r bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="p-6">
-        <h1 className="text-xl font-bold">Manage cattle</h1>
+        <h1 className="text-2xl font-semibold tracking-tight">Manage Cattle</h1>
       </div>
-      <div className="flex-1 px-4 space-y-2">
+      <div className="flex-1 px-3 py-2 space-y-1">
         {routes.map((route) => (
           <Link key={route.href} href={route.href}>
             <Button
               variant="ghost"
               className={cn(
-                "w-full justify-start",
-                pathname === route.href && "bg-gray-100"
+                "w-full justify-start text-base font-normal",
+                pathname === route.href && "bg-muted font-medium"
               )}
             >
               <route.icon className="w-5 h-5 mr-3" />

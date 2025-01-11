@@ -1,43 +1,38 @@
 "use client";
+
 import React from "react";
 import { useRouter } from "next/navigation";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
+import { MilkIcon as Cow, Search, ArrowLeft } from 'lucide-react'
 
 const AnimalComponent = () => {
   const router = useRouter();
 
-  const handleRegister = () => {
-    router.push("/animals/register-animals");
-  };
-
-  const handleSearch = () => {
-    router.push("/animals/search-animals");
-  };
-
   return (
-    <div className="flex justify-center items-center min-h-screen ">
-      <div className="p-6 bg-white shadow-md rounded-lg max-w-sm w-full">
-        <h2 className="text-xl font-bold text-center mb-4">Animal Management</h2>
-        <div className="flex flex-col gap-4">
-          <button
-            onClick={handleRegister}
-            className="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-500 transition"
-          >
-            Register Animal
-          </button>
-          <button
-            onClick={handleSearch}
-            className="px-4 py-2 bg-gray-700 text-white font-medium rounded-lg hover:bg-gray-500 transition"
-          >
-            Search Animal
-          </button>
-          <button
-            onClick={() => router.push("/dashboard")}
-            className="px-4 py-2 bg-gray-950 text-white font-medium rounded-lg hover:bg-gray-800 transition"
-          >Back</button>
-        </div>
-      </div>
+    <div className="container mx-auto py-10">
+      <Card className="max-w-md mx-auto">
+        <CardHeader>
+          <CardTitle>Animal Management</CardTitle>
+          <CardDescription>Register or search for animals</CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-4">
+          <Button onClick={() => router.push("/animals/register-animals")} className="w-full">
+            <Cow className="mr-2 h-4 w-4" /> Register Animal
+          </Button>
+          <Button onClick={() => router.push("/animals/search-animals")} variant="outline" className="w-full">
+            <Search className="mr-2 h-4 w-4" /> Search Animal
+          </Button>
+        </CardContent>
+        <CardFooter>
+          <Button onClick={() => router.push("/dashboard")} variant="ghost" className="w-full">
+            <ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard
+          </Button>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
 
 export default AnimalComponent;
+

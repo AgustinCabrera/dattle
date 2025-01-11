@@ -67,14 +67,12 @@ export default function SearchDiseasePage() {
       setIsLoading(false);
     }
   };
-  
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Search Diseases</h1>
-
       <Card className="mb-6">
         <CardContent className="pt-6">
+          <h1 className="text-2xl font-bold mb-6">Search Diseases</h1>
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
               <Select
@@ -116,8 +114,13 @@ export default function SearchDiseasePage() {
               View All Diseases
             </Button>
           </div>
+          <Button
+            className="w-full mt-4"
+            onClick={() => router.push("/diseases")}
+          >
+            Back
+          </Button>
         </CardContent>
-        <Button onClick={() => router.push("/diseases")}>Back</Button>
       </Card>
 
       {error && (

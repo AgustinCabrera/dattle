@@ -10,7 +10,7 @@ const RegisterHeatPage = () => {
   const [formData, setFormData] = useState({
     animalTag: "",
     observation: "",
-    detectionDate: "", 
+    detectionDate: "",
   });
 
   const router = useRouter();
@@ -38,7 +38,7 @@ const RegisterHeatPage = () => {
           type: "HEAT",
           animalTag: formData.animalTag.trim(),
           observation: formData.observation.trim(),
-          detectionDate: formData.detectionDate, 
+          detectionDate: formData.detectionDate,
         }),
       });
 
@@ -66,7 +66,9 @@ const RegisterHeatPage = () => {
       }
     } catch (error) {
       console.error("Error registering heat:", error);
-      setError(error instanceof Error ? error.message : "An unknown error occurred");
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -74,9 +76,9 @@ const RegisterHeatPage = () => {
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Register Heat</h1>
       <Card>
         <CardContent className="pt-6">
+          <h1 className="text-2xl font-bold mb-6">Register Heat</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="animalTag" className="text-sm font-medium">
@@ -119,12 +121,14 @@ const RegisterHeatPage = () => {
                 }
               />
             </div>
-            <Button type="submit" disabled={isLoading}>
+            <Button className="w-full" type="submit" disabled={isLoading}>
               {isLoading ? "Registering..." : "Register Heat"}
             </Button>
           </form>
+          <Button onClick={() => router.push("/heat-service")} className="mt-2 w-full">
+            Back
+          </Button>
         </CardContent>
-        <Button onClick={() => router.push("/heat-service")} className="mt-4">Back</Button>
       </Card>
       {error && (
         <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -136,4 +140,3 @@ const RegisterHeatPage = () => {
 };
 
 export default RegisterHeatPage;
-

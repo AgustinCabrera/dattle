@@ -71,18 +71,19 @@ const RegisterServicePage = () => {
       console.log("Service registered successfully");
     } catch (error) {
       console.error("Error registering Service:", error);
-      setError(error instanceof Error ? error.message : "An unknown error occurred");
-    }
-    finally{
+      setError(
+        error instanceof Error ? error.message : "An unknown error occurred"
+      );
+    } finally {
       setIsLoading(false);
     }
   };
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">Register Service</h1>
       <Card>
         <CardContent className="pt-6">
+          <h1 className="text-2xl font-bold mb-6">Register Service</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <label htmlFor="animalTag" className="text-sm font-medium">
@@ -120,10 +121,10 @@ const RegisterServicePage = () => {
                 }
               />
             </div>
-            <Button type="submit">Register Service</Button>
+            <Button className="w-full" type="submit">Register Service</Button>
           </form>
+          <Button className="w-full mt-2" onClick={() => router.push("/heat-service")}>Back</Button>
         </CardContent>
-        <Button onClick={() => router.push("/heat-service")}>Back</Button>
       </Card>
       {error && (
         <div className="mt-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">

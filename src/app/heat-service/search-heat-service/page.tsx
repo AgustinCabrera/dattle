@@ -98,9 +98,9 @@ const SearchPage = () => {
 
   return (
     <div className="container mx-auto py-6 max-w-2xl">
-      <h1 className="text-2xl font-bold mb-6">{`Search ${searchType}`}</h1>
       <Card className="mb-6">
         <CardContent className="pt-6">
+          <h1 className="text-2xl font-bold mb-6">{`Search ${searchType}`}</h1>
           <div className="flex flex-col gap-4">
             <div className="flex gap-4">
               <Select
@@ -137,10 +137,10 @@ const SearchPage = () => {
               </Button>
             </div>
           </div>
+          <Button onClick={() => router.push("/heat-service")} className="w-full mt-4">
+            Back
+          </Button>
         </CardContent>
-        <Button onClick={() => router.push("/heat-service")} className="mt-4">
-          Back
-        </Button>
       </Card>
 
       {error && (
