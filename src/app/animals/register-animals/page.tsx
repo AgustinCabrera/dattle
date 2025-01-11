@@ -29,7 +29,7 @@ const RegisterAnimalComponents = () => {
         })
       })
       if(!animalResponse.ok){
-        throw new Error('Failed to register animal')
+        throw new Error('Animal tag already exists in the database'); 
       }
       setFormData({
         tag: '',

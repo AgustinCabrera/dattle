@@ -79,8 +79,8 @@ const RegisterDiseaseComponent = () => {
         name: "",
         observation: "",
       });
-
       alert("Disease data saved successfully!");
+      router.push("/diseases");
     } catch (error) {
       console.error(error);
       alert(`An error occurred while saving the data: ${error.message}`);

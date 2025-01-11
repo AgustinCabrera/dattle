@@ -58,7 +58,6 @@ export async function GET(request: NextRequest) {
                   disease: {
                     name: {
                       contains: diseaseName,
-                      mode: "insensitive",
                     },
                   },
                 },
